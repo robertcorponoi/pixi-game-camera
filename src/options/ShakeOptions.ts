@@ -10,8 +10,10 @@ export default class ShakeOptions {
    * The duration, in milliseconds, of how long the camera should shake for.
    * 
    * @property {number}
+   *
+   * @default Infinity
    */
-  duration?: number;
+  duration: number = Infinity;
 
   /**
    * The intensity of the shake, from a scale of 1 to 10.

@@ -1,6 +1,7 @@
 'use strict'
 
 import * as PIXI from 'pixi.js';
+import Hypergiant from 'hypergiant'; 
 
 import ShakeOptions from '../options/ShakeOptions';
 
@@ -18,13 +19,42 @@ export default class Shake {
   private _container: PIXI.Container;
 
   /**
-   * A reference to the options for this Shake effect.
+   * A reference to the options for this effect.
    * 
    * @private
    * 
    * @property {ShakeOptions}
    */
   private _options: ShakeOptions;
+
+  /**
+   * The timestamp of when this effect was created.
+   *
+   * @private
+   *
+   * @property {DOMHighResTimeStamp}
+   *
+   * @default performance.now
+   */
+  private _started: DOMHighResTimeStamp = performance.now();
+
+  /**
+   * The timestamp of the last time this effect was run.
+   *
+   * @private
+   *
+   * @property {DOMHighResTimeStamp}
+   */
+  private _lastRun: DOMHighResTimeStamp = 0;
+
+  /**
+   * The signal that is dispatched when this effect is finished.
+   *
+   * @private
+   *
+   * @property {Hypergiant}
+   */
+  private _finished: Hypergiant = new Hypergiant();
 
   /**
    * @param {PIXI.Container} container The container to apply the shake effect to.
@@ -40,6 +70,13 @@ export default class Shake {
   }
 
   /**
+   * Returns the finished signal.
+   *
+   * @returns {Hypergiant}
+   */
+  get finished(): Hypergiant { return this._finished; }
+
+  /**
    * Updates the status of the shake.
    * 
    * If this effect is still active it runs the effect otherwise it just moves on.
@@ -47,14 +84,18 @@ export default class Shake {
    * @param {number} delta The delta value passed by the game loop.
    */
   update(delta: number) {
-    this.
-  }
+    console.log('shaking');
+    const current: DOMHighResTimeStamp = performance.now();
 
-  /**
-   * Stops the shake effect.
-   */
-  stop() {
-    this._isActive = false;
+    if (current >=  this._options.duration) {
+      this._finished.dispatch();
+
+      return;
+    }
+
+    this._lastRun = performance.now();
+
+    this._run(delta);
   }
 
   /**

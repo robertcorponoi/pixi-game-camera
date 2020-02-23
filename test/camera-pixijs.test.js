@@ -1,6 +1,7 @@
 'use strict'
 
-import PIXICamera from '../camera-pixijs.js';
+import PIXICamera from '../camera-pixi.js';
+const camera = new PIXICamera();
 
 // // 2D Rendering Context
 // const canvas = document.querySelector('#ctx');
@@ -77,13 +78,18 @@ container4.addChild(image4);
 
 app.stage.addChild(container1, container2, container3, container4);
 
-const pc = new PIXICamera(app.stage);
+const pc = new PIXICamera();
+
+const main = pc.camera(app.stage);
 
 // pc.zoomTo(app.stage, 10, 5000);
 
-const worldShake = pc.shake(app.stage);
+//const worldShake = pc.shake(app.stage);
 
-worldShake.start();
+//worldShake.start();
 
-app.ticker.add(delta => {
+app.ticker.add(time => {
+  pc.update();
+
+  main.shake();
 });
