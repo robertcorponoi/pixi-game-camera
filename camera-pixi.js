@@ -35,6 +35,307 @@ function _defineProperty(obj, key, value) {
   return obj;
 }
 
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (typeof call === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function linear(t) {
+  return +t;
+}
+
+function quadIn(t) {
+  return t * t;
+}
+
+function quadOut(t) {
+  return t * (2 - t);
+}
+
+function quadInOut(t) {
+  return ((t *= 2) <= 1 ? t * t : --t * (2 - t) + 1) / 2;
+}
+
+function cubicIn(t) {
+  return t * t * t;
+}
+
+function cubicOut(t) {
+  return --t * t * t + 1;
+}
+
+function cubicInOut(t) {
+  return ((t *= 2) <= 1 ? t * t * t : (t -= 2) * t * t + 2) / 2;
+}
+
+var exponent = 3;
+
+var polyIn = (function custom(e) {
+  e = +e;
+
+  function polyIn(t) {
+    return Math.pow(t, e);
+  }
+
+  polyIn.exponent = custom;
+
+  return polyIn;
+})(exponent);
+
+var polyOut = (function custom(e) {
+  e = +e;
+
+  function polyOut(t) {
+    return 1 - Math.pow(1 - t, e);
+  }
+
+  polyOut.exponent = custom;
+
+  return polyOut;
+})(exponent);
+
+var polyInOut = (function custom(e) {
+  e = +e;
+
+  function polyInOut(t) {
+    return ((t *= 2) <= 1 ? Math.pow(t, e) : 2 - Math.pow(2 - t, e)) / 2;
+  }
+
+  polyInOut.exponent = custom;
+
+  return polyInOut;
+})(exponent);
+
+var pi = Math.PI,
+    halfPi = pi / 2;
+
+function sinIn(t) {
+  return 1 - Math.cos(t * halfPi);
+}
+
+function sinOut(t) {
+  return Math.sin(t * halfPi);
+}
+
+function sinInOut(t) {
+  return (1 - Math.cos(pi * t)) / 2;
+}
+
+function expIn(t) {
+  return Math.pow(2, 10 * t - 10);
+}
+
+function expOut(t) {
+  return 1 - Math.pow(2, -10 * t);
+}
+
+function expInOut(t) {
+  return ((t *= 2) <= 1 ? Math.pow(2, 10 * t - 10) : 2 - Math.pow(2, 10 - 10 * t)) / 2;
+}
+
+function circleIn(t) {
+  return 1 - Math.sqrt(1 - t * t);
+}
+
+function circleOut(t) {
+  return Math.sqrt(1 - --t * t);
+}
+
+function circleInOut(t) {
+  return ((t *= 2) <= 1 ? 1 - Math.sqrt(1 - t * t) : Math.sqrt(1 - (t -= 2) * t) + 1) / 2;
+}
+
+var b1 = 4 / 11,
+    b2 = 6 / 11,
+    b3 = 8 / 11,
+    b4 = 3 / 4,
+    b5 = 9 / 11,
+    b6 = 10 / 11,
+    b7 = 15 / 16,
+    b8 = 21 / 22,
+    b9 = 63 / 64,
+    b0 = 1 / b1 / b1;
+
+function bounceIn(t) {
+  return 1 - bounceOut(1 - t);
+}
+
+function bounceOut(t) {
+  return (t = +t) < b1 ? b0 * t * t : t < b3 ? b0 * (t -= b2) * t + b4 : t < b6 ? b0 * (t -= b5) * t + b7 : b0 * (t -= b8) * t + b9;
+}
+
+function bounceInOut(t) {
+  return ((t *= 2) <= 1 ? 1 - bounceOut(1 - t) : bounceOut(t - 1) + 1) / 2;
+}
+
+var overshoot = 1.70158;
+
+var backIn = (function custom(s) {
+  s = +s;
+
+  function backIn(t) {
+    return t * t * ((s + 1) * t - s);
+  }
+
+  backIn.overshoot = custom;
+
+  return backIn;
+})(overshoot);
+
+var backOut = (function custom(s) {
+  s = +s;
+
+  function backOut(t) {
+    return --t * t * ((s + 1) * t + s) + 1;
+  }
+
+  backOut.overshoot = custom;
+
+  return backOut;
+})(overshoot);
+
+var backInOut = (function custom(s) {
+  s = +s;
+
+  function backInOut(t) {
+    return ((t *= 2) < 1 ? t * t * ((s + 1) * t - s) : (t -= 2) * t * ((s + 1) * t + s) + 2) / 2;
+  }
+
+  backInOut.overshoot = custom;
+
+  return backInOut;
+})(overshoot);
+
+var tau = 2 * Math.PI,
+    amplitude = 1,
+    period = 0.3;
+
+var elasticIn = (function custom(a, p) {
+  var s = Math.asin(1 / (a = Math.max(1, a))) * (p /= tau);
+
+  function elasticIn(t) {
+    return a * Math.pow(2, 10 * --t) * Math.sin((s - t) / p);
+  }
+
+  elasticIn.amplitude = function(a) { return custom(a, p * tau); };
+  elasticIn.period = function(p) { return custom(a, p); };
+
+  return elasticIn;
+})(amplitude, period);
+
+var elasticOut = (function custom(a, p) {
+  var s = Math.asin(1 / (a = Math.max(1, a))) * (p /= tau);
+
+  function elasticOut(t) {
+    return 1 - a * Math.pow(2, -10 * (t = +t)) * Math.sin((t + s) / p);
+  }
+
+  elasticOut.amplitude = function(a) { return custom(a, p * tau); };
+  elasticOut.period = function(p) { return custom(a, p); };
+
+  return elasticOut;
+})(amplitude, period);
+
+var elasticInOut = (function custom(a, p) {
+  var s = Math.asin(1 / (a = Math.max(1, a))) * (p /= tau);
+
+  function elasticInOut(t) {
+    return ((t = t * 2 - 1) < 0
+        ? a * Math.pow(2, 10 * t) * Math.sin((s - t) / p)
+        : 2 - a * Math.pow(2, -10 * t) * Math.sin((s + t) / p)) / 2;
+  }
+
+  elasticInOut.amplitude = function(a) { return custom(a, p * tau); };
+  elasticInOut.period = function(p) { return custom(a, p); };
+
+  return elasticInOut;
+})(amplitude, period);
+
+
+
+var easing = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  easeLinear: linear,
+  easeQuad: quadInOut,
+  easeQuadIn: quadIn,
+  easeQuadOut: quadOut,
+  easeQuadInOut: quadInOut,
+  easeCubic: cubicInOut,
+  easeCubicIn: cubicIn,
+  easeCubicOut: cubicOut,
+  easeCubicInOut: cubicInOut,
+  easePoly: polyInOut,
+  easePolyIn: polyIn,
+  easePolyOut: polyOut,
+  easePolyInOut: polyInOut,
+  easeSin: sinInOut,
+  easeSinIn: sinIn,
+  easeSinOut: sinOut,
+  easeSinInOut: sinInOut,
+  easeExp: expInOut,
+  easeExpIn: expIn,
+  easeExpOut: expOut,
+  easeExpInOut: expInOut,
+  easeCircle: circleInOut,
+  easeCircleIn: circleIn,
+  easeCircleOut: circleOut,
+  easeCircleInOut: circleInOut,
+  easeBounce: bounceOut,
+  easeBounceIn: bounceIn,
+  easeBounceOut: bounceOut,
+  easeBounceInOut: bounceInOut,
+  easeBack: backInOut,
+  easeBackIn: backIn,
+  easeBackOut: backOut,
+  easeBackInOut: backInOut,
+  easeElastic: elasticOut,
+  easeElasticIn: elasticIn,
+  easeElasticOut: elasticOut,
+  easeElasticInOut: elasticInOut
+});
+
 function _classCallCheck$1(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -477,182 +778,189 @@ function () {
 }();
 
 /**
- * Defines the object that is used to pass options to the `shake` effect.
- */
-var ShakeOptions =
-/**
- * The duration, in milliseconds, of how long the camera should shake for.
- * 
- * @property {number}
- *
- * @default Infinity
+ * A generic object that contains the properties and methods of all effects.
  */
 
+var Effect =
 /**
- * The intensity of the shake, from a scale of 1 to 10.
+ * The container that the effect is happening on.
  * 
- * @property {number}
- * 
- * @default 5
+ * @property {PIXI.Container}
  */
 
 /**
- * The scale that should be used when shaking the container.
+ * A reference to the singal that is dispatched when this effect is finished.
  * 
- * It is recommended to use a scale of at least 1.2 so that you can't see the edges of the game container.
- * 
- * @property {number}
- * 
- * @default 1.2
+ * @property {Hypergiant}
  */
 
 /**
- * @param {Object} options The options passed from the `shake` method.
+ * @param {PIXI.Container} container The container that the effect is happening on.
  */
-function ShakeOptions(options) {
-  _classCallCheck(this, ShakeOptions);
+function Effect(container) {
+  _classCallCheck(this, Effect);
 
-  _defineProperty(this, "duration", Infinity);
+  _defineProperty(this, "container", void 0);
 
-  _defineProperty(this, "intensity", 5);
+  _defineProperty(this, "finished", new Hypergiant());
 
-  _defineProperty(this, "scale", 1.2);
-
-  Object.assign(this, options);
-};
+  this.container = container;
+}
+/**
+ * Updates the effect frame by frame.
+ * 
+ * @param {number} delta The delta value passed by the game loop.
+ */
+;
 
 /**
- * A Shake effect involves shaking the camera at various amounts up to a sepcified intensity.
+ * A zooming and panning effect that involves the camera zooming in to a particular point on the container.
  */
-
-var Shake =
+var ZoomTo =
 /*#__PURE__*/
-function () {
+function (_Effect) {
+  _inherits(ZoomTo, _Effect);
+
   /**
-   * A reference to the containers involved in this effect.
+   * The zoom level to zoom to with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
    * 
    * @private
    * 
-   * @property {PIXI.Container}
+   * @property {Vector}
    */
 
   /**
-   * A reference to the options for this effect.
+   * The duration of this zoom effect.
    * 
    * @private
    * 
-   * @property {ShakeOptions}
+   * @property {number}
    */
 
   /**
-   * The timestamp of when this effect was created.
-   *
+   * A reference to the easing function to use for this effect.
+   * 
    * @private
-   *
+   * 
+   * @property {Function}
+   * 
+   * @default easeLinear
+   */
+
+  /**
+   * A timestamp of when this effect was created.
+   * 
+   * @private
+   * 
    * @property {DOMHighResTimeStamp}
-   *
-   * @default performance.now
    */
 
   /**
-   * The timestamp of the last time this effect was run.
-   *
+   * A timestamp of when this effect was last run.
+   * 
    * @private
-   *
+   * 
    * @property {DOMHighResTimeStamp}
    */
 
   /**
-   * The signal that is dispatched when this effect is finished.
-   *
+   * A reference to the initial zoom level.
+   * 
    * @private
-   *
-   * @property {Hypergiant}
+   * 
+   * @property {Vector}
    */
 
   /**
-   * @param {PIXI.Container} container The container to apply the shake effect to.
-   * @param {Object} [options]
-   * @param {number} [options.intensity=5] The intensity of the shake, from a scale of 1 to 10.
-   * @param {number} [options.scale=1.2] The scale that should be used when shaking the container. It is recommended to use a scale of at least 1.01 so that you can't see the edges of the game container.
-   * @param {number} [options.duration=Infinity] The duration of the shake effect.
+   * Indicates whether we're zooming in or out.
+   * 
+   * @private
+   * 
+   * @property {boolean}
+   * 
+   * @default false
    */
-  function Shake(container, options) {
-    _classCallCheck(this, Shake);
 
-    _defineProperty(this, "_container", void 0);
+  /**
+   * @param {PIXI.Container} container A reference to the container to apply the zoomto effect to.
+   * @param {number} zoomLevel The zoom level to zoom to with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
+   * @param {number} duration The amount of time, in milliseconds, that the effect should take.
+   * @param {Function} easing The easing function that should be used.
+   */
+  function ZoomTo(container, zoomLevel, duration, easing) {
+    var _this;
 
-    _defineProperty(this, "_options", void 0);
+    _classCallCheck(this, ZoomTo);
 
-    _defineProperty(this, "_started", performance.now());
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ZoomTo).call(this, container));
 
-    _defineProperty(this, "_lastRun", 0);
+    _defineProperty(_assertThisInitialized(_this), "_desiredZoomLevel", void 0);
 
-    _defineProperty(this, "_finished", new Hypergiant());
+    _defineProperty(_assertThisInitialized(_this), "_duration", void 0);
 
-    this._container = container;
-    this._options = new ShakeOptions(options);
+    _defineProperty(_assertThisInitialized(_this), "_easing", linear);
+
+    _defineProperty(_assertThisInitialized(_this), "_started", performance.now());
+
+    _defineProperty(_assertThisInitialized(_this), "_current", 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_currentZoomLevel", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_zoomIn", false);
+
+    _this._desiredZoomLevel = {
+      x: zoomLevel,
+      y: zoomLevel
+    };
+    _this._duration = duration;
+    if (easing) _this._easing = easing;
+    _this._currentZoomLevel = {
+      x: _this.container.scale.x,
+      y: _this.container.scale.y
+    };
+    if (zoomLevel > _this._currentZoomLevel.x) _this._zoomIn = true;
+    return _this;
   }
   /**
-   * Returns the finished signal.
-   *
-   * @returns {Hypergiant}
+   * Updates the status of this effect on a frame by frame basis.
    */
 
 
-  _createClass(Shake, [{
+  _createClass(ZoomTo, [{
     key: "update",
-
-    /**
-     * Updates the status of the shake.
-     * 
-     * If this effect is still active it runs the effect otherwise it just moves on.
-     * 
-     * @param {number} delta The delta value passed by the game loop.
-     */
-    value: function update(delta) {
-      console.log('shaking');
-      var current = performance.now();
-
-      if (current >= this._options.duration) {
-        this._finished.dispatch();
-
+    value: function update() {
+      if (this._zoomCriteriaMet()) {
+        this.finished.dispatch();
         return;
       }
 
-      this._lastRun = performance.now();
+      this._current = performance.now();
+      var timeDiffPercentage = this._current / this._duration;
 
-      this._run(delta);
+      var percentageThroughAnimation = this._easing(timeDiffPercentage);
+
+      var zoomAmount = this._desiredZoomLevel.x * percentageThroughAnimation;
+      this.container.scale.x = zoomAmount + 1;
+      this.container.scale.y = zoomAmount + 1;
     }
     /**
-     * The actual shake effect used by start and update to run the effect.
+     * Checks to see if the container's current zoom level is very close to the desired zoom level.
      * 
-     * @private
+     * We can't use container zoom == desired zoom because with the game loop we might miss that exact moment so we check a very small window.
      * 
-     * @param {number} delta The delta value passed by the game loop.
+     * @returns {boolean} Returns true if the zoom criteria is met or false otherwise.
      */
 
   }, {
-    key: "_run",
-    value: function _run(delta) {
-      var dx = Math.random() * this._options.intensity;
-
-      var dy = Math.random() * this._options.intensity;
-
-      this._container.scale.x = this._options.scale;
-      this._container.scale.y = this._options.scale;
-      this._container.pivot.x = dx;
-      this._container.pivot.y = dy;
-    }
-  }, {
-    key: "finished",
-    get: function get() {
-      return this._finished;
+    key: "_zoomCriteriaMet",
+    value: function _zoomCriteriaMet() {
+      if (this.container.scale.x > this._desiredZoomLevel.x - 0.1 && this.container.scale.x < this._desiredZoomLevel.x + 0.1 && this.container.scale.y > this._desiredZoomLevel.y - 0.1 && this.container.scale.y < this._desiredZoomLevel.y + 0.1) return true;
+      return false;
     }
   }]);
 
-  return Shake;
-}();
+  return ZoomTo;
+}(Effect);
 
 /**
  * Camera that can be applied to a game/animation made with pixijs.
@@ -670,120 +978,120 @@ function () {
    */
 
   /**
-   * Keeps track of all of the camera effects in use.
+   * A reference to the PIXI Ticker, if it's being used.
    * 
    * @private
    * 
-   * @property {Array<Shake>}
-   * 
-   * @default []
+   * @property {PIXI.Ticker}
    */
 
   /**
    * @param {PIXI.Container} container The container this camera is focusing on.
+   * @param {PIXI.Ticker} [ticker] A reference to the PIXI Ticker, if it's being used.
    */
-  function Camera(container) {
+  function Camera(container, ticker) {
     _classCallCheck(this, Camera);
 
     _defineProperty(this, "_container", void 0);
 
-    _defineProperty(this, "_effects", []);
+    _defineProperty(this, "_ticker", void 0);
 
     this._container = container;
+    if (ticker) this._ticker = ticker;
   }
   /**
-   * Used in the game loop to update the camera effect animations.
+   * Creates a new shake effect that can be used.
    * 
-   * @param {number} delta The delta value passed by the game loop.
+   * @param {Object} [options]
+   * @param {number} [options.intensity=5] The intensity of the shake, from a scale of 1 to 10.
+   * @param {number} [options.scale=1.2] The scale that should be used when shaking the container. It is recommended to use a scale of at least 1.01 so that you can't see the edges of the game container.
+   * @param {number} [options.duration=Infinity] The duration of the shake effect.
+   * 
+   * @returns {Shake} Returns the shake effect.
+   * 
+   * @example
+   * 
+   * const worldShake = cameraPIXI.shake(app.stage, 10);
+   */
+  // shake(options: Object = {}) {
+  //   const shake: Shake = new Shake(this._container, options);
+  //   this._addToEffects(shake);
+  //   shake.finished.add(() => {
+  //     shake.reset();
+  //     this._removeFromEffects(shake);
+  //   });
+  // }
+
+  /**
+   * Zooms in or out to a specified area.
+   * 
+   * @param {number} zoomLevel The zoom level to zoom to with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
+   * @param {number} duration The amount of time, in milliseconds, that the effect should take.
+   * @param {Function} [easing=easeLinear] The easing function that should be used.
    */
 
 
   _createClass(Camera, [{
-    key: "update",
-    value: function update(delta) {
-      console.log('effect updating');
+    key: "zoomTo",
+    value: function zoomTo(zoomLevel, duration) {
+      var easing = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : linear;
+      var zoomTo = new ZoomTo(this._container, zoomLevel, duration, easing);
 
-      this._effects.map(function (effect) {
-        return effect.update(delta);
-      });
+      this._addToTicker(zoomTo);
     }
     /**
-     * Creates a new shake effect that can be used.
+     * Adds an effect to the PIXI Ticker if it's being used and removes it when necessary.
      * 
-     * @param {PIXI.Container} container The container to apply this effect to.
-     * @param {Object} [options]
-     * @param {number} [options.intensity=5] The intensity of the shake, from a scale of 1 to 10.
-     * @param {number} [options.scale=1.2] The scale that should be used when shaking the container. It is recommended to use a scale of at least 1.01 so that you can't see the edges of the game container.
-     * @param {number} [options.duration=Infinity] The duration of the shake effect.
+     * @private
      * 
-     * @returns {Shake} Returns the shake effect.
-     * 
-     * @example
-     * 
-     * const worldShake = cameraPIXI.shake(app.stage, 10);
+     * @param {Effect} effect The effect to add to the Ticker.
      */
 
   }, {
-    key: "shake",
-    value: function shake(container) {
+    key: "_addToTicker",
+    value: function _addToTicker(effect) {
       var _this = this;
 
-      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var shake = new Shake(container, options);
-      shake.finished.add(function () {
-        return _this._removeFromEffects(shake);
-      });
-    }
-    /**
-     * Zooms in or out to a specified area.
-     * 
-     * @param {PIXI.Container} container The container to apply this effect to.
-     * @param {number} zoom The zoom multiplier to use. A zoom multipler less than 1 will cause the camera to zoom out.
-     * @param {number} [speed=5] A value between 1-10 that specifies the speed of the zoom.
-     */
+      var effectBound = effect.update.bind(effect);
 
-  }, {
-    key: "zoomTo",
-    value: function zoomTo(container, zoom) {
-      setInterval(function () {
-        if (container.scale.x < zoom) {
-          container.scale.x += 0.1;
-          container.scale.y += 0.1;
-        }
-      }, 50);
-    }
-    /**
-     * Adds the effect to the list of effects.
-     * 
-     * @private
-     * 
-     * @param {Shake} effect The effect to add to the list of effects.
-     */
+      if (this._ticker) {
+        var _this$_ticker2;
 
-  }, {
-    key: "_addToEffects",
-    value: function _addToEffects(effect) {
-      this._effects.push(effect);
-    }
-    /**
-     * Removes an effect from the list of effects.
-     *
-     * @private
-     *
-     * @param {Shake} effect The effect to remove from the list of effects.
-     */
+        effect.finished.add(function () {
+          var _this$_ticker;
 
-  }, {
-    key: "_removeFromEffects",
-    value: function _removeFromEffects(effect) {
-      this._effects = this._effects.filter(function (eff) {
-        return eff != effect;
-      });
+          return (_this$_ticker = _this._ticker) === null || _this$_ticker === void 0 ? void 0 : _this$_ticker.remove(effectBound);
+        });
+        (_this$_ticker2 = this._ticker) === null || _this$_ticker2 === void 0 ? void 0 : _this$_ticker2.add(effectBound);
+      }
     }
   }]);
 
   return Camera;
 }();
+
+/**
+ * A reference to the options passed to camera-pixi on initialization.
+ */
+var Options =
+/**
+ * A reference to the PIXI ticker if it's being used.
+ * 
+ * If the PIXI ticker is not used then updates will have to be called manually.
+ * 
+ * @property {PIXI.Ticker}
+ */
+
+/**
+ * @param {Object} options The optionas passed to camera-pixi on initialization.
+ */
+function Options(options) {
+  _classCallCheck(this, Options);
+
+  _defineProperty(this, "ticker", void 0);
+
+  Object.assign(this, options);
+};
 
 /**
  * TODO
@@ -792,25 +1100,66 @@ function () {
 var PIXICamera =
 /*#__PURE__*/
 function () {
+  /**
+   * A reference to the options passed on initialization.
+   * 
+   * @private
+   * 
+   * @property {Options}
+   */
+
+  /**
+   * A reference to the cameras created.
+   *
+   * @private
+   *
+   * @property {Array<Camera>}
+   */
+
+  /**
+   * A reference to the easing functions that can be used.
+   * 
+   * @private
+   * 
+   * @property {*}
+   */
+
+  /**
+   * @param {Object} [options]
+   * @param {PIXI.Ticker} [options.ticker] A reference to the PIXI ticker if it's being used. If the PIXI ticker is not used then updates will have to be called manually.
+   */
   function PIXICamera() {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
     _classCallCheck(this, PIXICamera);
 
+    _defineProperty(this, "_options", void 0);
+
     _defineProperty(this, "_cameras", []);
+
+    _defineProperty(this, "_EASING", easing);
+
+    this._options = new Options(options);
   }
+  /**
+   * Returns the easing functions that can be selected from.
+   * 
+   * @returns {*}
+   */
+
 
   _createClass(PIXICamera, [{
-    key: "update",
+    key: "camera",
 
     /**
      * Updates all cameras and runs all of the effects.
      *
      * @param {DOMHighResTimeStamp} time The time from the game loop.
      */
-    value: function update(time) {
-      this._cameras.map(function (camera) {
-        return camera.update(time);
-      });
-    }
+    // update(time: DOMHighResTimeStamp) {
+    //   this._cameras.map((camera: Camera) => camera.update(time));
+    // }
+
     /**
      * Creates a new camera that is focused on a container.
      *
@@ -818,15 +1167,17 @@ function () {
      *
      * @returns {Camera}
      */
-
-  }, {
-    key: "camera",
     value: function camera(container) {
-      var cam = new Camera(container);
+      var cam = new Camera(container, this._options.ticker);
 
       this._cameras.push(cam);
 
       return cam;
+    }
+  }, {
+    key: "EASING",
+    get: function get() {
+      return this._EASING;
     }
   }]);
 

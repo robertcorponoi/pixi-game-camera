@@ -78,18 +78,20 @@ container4.addChild(image4);
 
 app.stage.addChild(container1, container2, container3, container4);
 
-const pc = new PIXICamera();
+const pc = new PIXICamera({ ticker: app.ticker });
 
 const main = pc.camera(app.stage);
+
+main.zoomTo(4, 4000, pc.EASING.easeBounceIn);
 
 // pc.zoomTo(app.stage, 10, 5000);
 
 //const worldShake = pc.shake(app.stage);
 
 //worldShake.start();
-
 app.ticker.add(time => {
-  pc.update();
 
-  main.shake();
+  
+
+  //main.shake({ duration: 3000 });
 });
