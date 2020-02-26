@@ -1,80 +1,83 @@
 'use strict'
 
 import * as PIXI from 'pixi.js';
-import Hypergiant from 'hypergiant';
 
 import Effect from './Effect';
-import ShakeOptions from '../options/ShakeOptions';
+import Vector from '../interface/Vector';
 
 /**
  * A Shake effect involves shaking the camera at various amounts up to a sepcified intensity.
  */
 export default class Shake extends Effect {
   /**
-   * A reference to the options for this effect.
+   * The intensity of the shake, from 1-10.
    * 
    * @private
    * 
-   * @property {ShakeOptions}
+   * @property {number}
+   * 
+   * @default 5
    */
-  private _options: ShakeOptions;
+  private _intensity: number = 5;
 
   /**
-   * @param {PIXI.Container} container The container to apply the shake effect to.
-   * @param {Object} [options]
-   * @param {number} [options.intensity=5] The intensity of the shake, from a scale of 1 to 10.
-   * @param {number} [options.scale=1.2] The scale that should be used when shaking the container. It is recommended to use a scale of at least 1.01 so that you can't see the edges of the game container.
-   * @param {number} [options.duration=Infinity] The duration of the shake effect.
+   * The duration of this shake effect.
+   * 
+   * @private
+   * 
+   * @property {number}
+   * 
+   * @default Infinity
    */
-  constructor(container: PIXI.Container, options: Object) {
+  private _duration: number = Infinity;
+
+  /**
+   * A reference to the initial pivot of the container.
+   * 
+   * @private
+   * 
+   * @property {Vector}
+   */
+  private _initialPivot: Vector;
+
+  /**
+   * @param {PIXI.Container} container A reference to the container to apply the shake effect to.
+   * @param {number} intensity The intensity of the shake, from a scale of 1 to 10.
+   * @param {number} duration The duration of the shake effect.
+   */
+  constructor(container: PIXI.Container, intensity: number, duration: number) {
     super(container);
 
-    this._options = new ShakeOptions(options);
+    this._intensity = intensity;
+
+    this._duration = duration;
+
+    this._initialPivot = { x: this.container.pivot.x, y: this.container.pivot.y };
+
+    this.started = performance.now();
   }
 
   /**
    * Updates the status of the shake.
-   * 
-   * @param {number} delta The delta value passed by the game loop.
    */
-  update(delta: number) {
-    const current: DOMHighResTimeStamp = performance.now();
+  update() {
+    this.current = performance.now();
 
-    if (current >= this._options.duration) {
+    if (this.current - this.started >= this._duration) {
+      this.container.pivot.x = this._initialPivot.x;
+      this.container.pivot.y = this._initialPivot.y;
+
       this.finished.dispatch();
 
       return;
     }
 
-    this.run(delta);
-  }
-  
-  /**
-   * Resets the values of the pivot and scale to return ths container back to normal.
-   */
-  reset() {
-    this.container.pivot.x = 0;
-    this.container.pivot.y = 0;
-
-    this.container.scale.x = 1;
-    this.container.scale.y = 1;
-  }
-
-  /**
-   * The actual shake effect used by update.
-   * 
-   * @private
-   * 
-   * @param {number} delta The delta value passed by the game loop.
-   */
-  run(delta: number) {
-    const dx: number = Math.random() * this._options.intensity;
-    const dy: number = Math.random() * this._options.intensity;
-
-    this.container.scale.x = this._options.scale;
-    this.container.scale.y = this._options.scale;
+    const dx: number = Math.random() * this._intensity;
+    const dy: number = Math.random() * this._intensity;
 
     this.container.pivot.x = dx;
     this.container.pivot.y = dy;
+
+    if (this.useRAF) this.id = requestAnimationFrame(() => this.update());
   }
 }

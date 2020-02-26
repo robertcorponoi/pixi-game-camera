@@ -1,15 +1,12 @@
 'use strict'
 
 import * as PIXI from 'pixi.js';
-import { easeLinear } from 'd3-ease';
 
 import Effect from './Effect';
-import EffectOptions from '../options/EffectOptions';
-
 import Vector from '../interface/Vector';
 
 /**
- * A zooming and panning effect that involves the camera zooming in to a particular point on the container.
+ * A zooming effect that involves the camera zooming in to a particular point on the container.
  */
 export default class ZoomTo extends Effect {
   /**
@@ -36,28 +33,8 @@ export default class ZoomTo extends Effect {
    * @private
    * 
    * @property {Function}
-   * 
-   * @default easeLinear
    */
-  private _easing: Function = easeLinear;
-
-  /**
-   * A timestamp of when this effect was created.
-   * 
-   * @private
-   * 
-   * @property {DOMHighResTimeStamp}
-   */
-  private _started: DOMHighResTimeStamp = performance.now();
-
-  /**
-   * A timestamp of when this effect was last run.
-   * 
-   * @private
-   * 
-   * @property {DOMHighResTimeStamp}
-   */
-  private _current: DOMHighResTimeStamp = 0;
+  private _easing: Function;
 
   /**
    * A reference to the initial zoom level.
@@ -92,13 +69,11 @@ export default class ZoomTo extends Effect {
 
     this._duration = duration;
 
-    if (easing) this._easing = easing;
+    this._easing = easing;
 
     this._currentZoomLevel = { x: this.container.scale.x, y: this.container.scale.y };
 
     if (zoomLevel > this._currentZoomLevel.x) this._zoomIn = true;
-
-    
   }
 
   /**
@@ -111,9 +86,9 @@ export default class ZoomTo extends Effect {
       return;
     }
 
-    this._current = performance.now();
+    this.current = performance.now();
     
-    const timeDiffPercentage: number = this._current / this._duration;
+    const timeDiffPercentage: number = this.current / this._duration;
 
     const percentageThroughAnimation: number = this._easing(timeDiffPercentage);
 
@@ -121,12 +96,16 @@ export default class ZoomTo extends Effect {
 
     this.container.scale.x = zoomAmount + 1;
     this.container.scale.y = zoomAmount + 1;
+
+    if (this.useRAF) this.id = requestAnimationFrame(() => this.update());
   }
 
   /**
    * Checks to see if the container's current zoom level is very close to the desired zoom level.
    * 
    * We can't use container zoom == desired zoom because with the game loop we might miss that exact moment so we check a very small window.
+   * 
+   * @private
    * 
    * @returns {boolean} Returns true if the zoom criteria is met or false otherwise.
    */

@@ -53,15 +53,6 @@ export default class PIXICamera {
   get EASING(): any { return this._EASING; }
 
   /**
-   * Updates all cameras and runs all of the effects.
-   *
-   * @param {DOMHighResTimeStamp} time The time from the game loop.
-   */
-  // update(time: DOMHighResTimeStamp) {
-  //   this._cameras.map((camera: Camera) => camera.update(time));
-  // }
-
-  /**
    * Creates a new camera that is focused on a container.
    *
    * @param {PIXI.Camera} container The container to focus the camera and its effects on.

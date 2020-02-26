@@ -59,8 +59,8 @@ const image2 = PIXI.Sprite.from('assets/parallax_forest_pack/layers/parallax-for
 const image3 = PIXI.Sprite.from('assets/parallax_forest_pack/layers/parallax-forest-middle-trees.png');
 const image4 = PIXI.Sprite.from('assets/parallax_forest_pack/layers/parallax-forest-front-trees.png');
 
-image1.width = 500;
-image1.height = 300;
+image1.width = 1500;
+image1.height = 1300;
 
 image2.width = 500;
 image2.height = 300;
@@ -79,10 +79,15 @@ container4.addChild(image4);
 app.stage.addChild(container1, container2, container3, container4);
 
 const pc = new PIXICamera({ ticker: app.ticker });
+//const pc = new PIXICamera();
 
 const main = pc.camera(app.stage);
 
-main.zoomTo(4, 4000, pc.EASING.easeBounceIn);
+app.stage.scale.x = 1.01;
+app.stage.scale.y = 1.01;
+//const zoom = main.zoomTo(4, 4000, pc.EASING.easeBounceIn);
+//const shake = main.shake(5, 4000);
+main.panTo(1000, 1000, 3000, pc.EASING.easeBounceIn);
 
 // pc.zoomTo(app.stage, 10, 5000);
 
@@ -90,8 +95,6 @@ main.zoomTo(4, 4000, pc.EASING.easeBounceIn);
 
 //worldShake.start();
 app.ticker.add(time => {
-
-  
 
   //main.shake({ duration: 3000 });
 });

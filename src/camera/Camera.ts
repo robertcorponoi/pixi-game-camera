@@ -6,6 +6,7 @@ import { easeLinear } from 'd3-ease';
 import Effect from '../effects/Effect';
 import Shake from '../effects/Shake';
 import ZoomTo from '../effects/ZoomTo';
+import PanTo from '../effects/PanTo';
 
 /**
  * Camera that can be applied to a game/animation made with pixijs.
@@ -42,28 +43,14 @@ export default class Camera {
   /**
    * Creates a new shake effect that can be used.
    * 
-   * @param {Object} [options]
-   * @param {number} [options.intensity=5] The intensity of the shake, from a scale of 1 to 10.
-   * @param {number} [options.scale=1.2] The scale that should be used when shaking the container. It is recommended to use a scale of at least 1.01 so that you can't see the edges of the game container.
-   * @param {number} [options.duration=Infinity] The duration of the shake effect.
-   * 
-   * @returns {Shake} Returns the shake effect.
-   * 
-   * @example
-   * 
-   * const worldShake = cameraPIXI.shake(app.stage, 10);
+   * @param {number} [intensity=5] The intensity of the shake, from a scale of 1 to 10.
+   * @param {number} [duration=Infinity] The duration of the shake effect.
    */
-  // shake(options: Object = {}) {
-  //   const shake: Shake = new Shake(this._container, options);
+  shake(intensity: number = 5, duration: number = Infinity) {
+    const shake: Shake = new Shake(this._container, intensity, duration);
 
-  //   this._addToEffects(shake);
-
-  //   shake.finished.add(() => {
-  //     shake.reset();
-
-  //     this._removeFromEffects(shake);
-  //   });
-  // }
+    this._addToTicker(shake);
+  }
 
   /**
    * Zooms in or out to a specified area.
@@ -76,6 +63,20 @@ export default class Camera {
     const zoomTo: ZoomTo = new ZoomTo(this._container, zoomLevel, duration, easing);
 
     this._addToTicker(zoomTo);
+  }
+
+  /**
+   * Pans to a specific coordinate.
+   * 
+   * @param {number} x The x coordinate to pan to.
+   * @param {number} y The y coordinate to pan to.
+   * @param {number} duration The amount of time, in milliseconds, that the effect should take.
+   * @param {Function} [easing=easeLinear] The easing function that should be used.
+   */
+  panTo(x: number, y: number, duration: number, easing: Function = easeLinear) {
+    const panTo: PanTo = new PanTo(this._container, x, y, duration, easing);
+
+    this._addToTicker(panTo);
   }
 
   /**
@@ -92,6 +93,6 @@ export default class Camera {
       effect.finished.add(() => this._ticker?.remove(effectBound));
 
       this._ticker?.add(effectBound);
-    }
+    } else effect.start();
   }
 }

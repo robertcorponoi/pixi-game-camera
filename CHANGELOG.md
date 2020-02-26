@@ -1,3 +1,7 @@
+## 0.0.4 / 2020-02-25
+- [FEATURE] Finished shake effect.
+- [FEATURE] Started panTo effect.
+
 ## 0.0.3 / 2020-02-24
 - [FEATURE] Added ability to pass in PIXI.Ticker.
 - [FEATURE] Removed update methods as they caused multiple instances of an effect to be created each frame.
