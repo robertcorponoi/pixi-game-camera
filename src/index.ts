@@ -7,7 +7,7 @@ import Camera from './camera/Camera';
 import Options from './options/Options';
 
 /**
- * TODO
+ * A camera with effects for your PIXI application that makes no assumption of how you use PIXI.
  */
 export default class PIXICamera {
   /**
@@ -20,15 +20,6 @@ export default class PIXICamera {
   private _options: Options;
 
   /**
-   * A reference to the cameras created.
-   *
-   * @private
-   *
-   * @property {Array<Camera>}
-   */
-  private _cameras: Array<Camera> = [];
-
-  /**
    * A reference to the easing functions that can be used.
    * 
    * @private
@@ -39,6 +30,8 @@ export default class PIXICamera {
 
   /**
    * @param {Object} [options]
+   * @param {PIXI.Sprite} [options.sprite] A reference to the PIXI sprite object used for some effects such as fade.\
+   * @param {PIXI.Texture} [options.texture] A reference to the PIXI.Texture object. This is used along with the PIXI.Sprite option to set textures for some of the effects.
    * @param {PIXI.Ticker} [options.ticker] A reference to the PIXI ticker if it's being used. If the PIXI ticker is not used then updates will have to be called manually.
    */
   constructor(options: Object = {}) {
@@ -60,9 +53,7 @@ export default class PIXICamera {
    * @returns {Camera}
    */
   camera(container: PIXI.Container): Camera {
-    const cam: Camera = new Camera(container, this._options.ticker);
-
-    this._cameras.push(cam);
+    const cam: Camera = new Camera(container, this._options);
 
     return cam;
   }

@@ -1,3 +1,7 @@
+## 0.0.5 / 2020-02-26
+- [FEATURE] Finished panTo effect.
+- [HOTFIX] Fixed issue with zooming that caused it to finish before the duration of the effect had been reached.
+
 ## 0.0.4 / 2020-02-25
 - [FEATURE] Finished shake effect.
 - [FEATURE] Started panTo effect.

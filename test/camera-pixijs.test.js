@@ -1,7 +1,6 @@
 'use strict'
 
 import PIXICamera from '../camera-pixi.js';
-const camera = new PIXICamera();
 
 // // 2D Rendering Context
 // const canvas = document.querySelector('#ctx');
@@ -78,16 +77,26 @@ container4.addChild(image4);
 
 app.stage.addChild(container1, container2, container3, container4);
 
-const pc = new PIXICamera({ ticker: app.ticker });
+const options = {
+  ticker: app.ticker,
+  sprite: PIXI.Sprite,
+  texture: PIXI.Texture,
+};
+
+const pc = new PIXICamera(options);
 //const pc = new PIXICamera();
 
 const main = pc.camera(app.stage);
 
-app.stage.scale.x = 1.01;
-app.stage.scale.y = 1.01;
-//const zoom = main.zoomTo(4, 4000, pc.EASING.easeBounceIn);
+// app.stage.pivot.x = 1000;
+// app.stage.pivot.y = 800;
+//const zoom = main.zoomTo(2, 2, 4000, pc.EASING.easeBounceIn);
 //const shake = main.shake(5, 4000);
-main.panTo(1000, 1000, 3000, pc.EASING.easeBounceIn);
+//main.panTo(1000, 1000, 3000);
+
+const fade = main.fade(0x000000, 4000, pc.EASING.easeCubicIn);
+
+//main.panTo(0, 0, 3000);
 
 // pc.zoomTo(app.stage, 10, 5000);
 

@@ -15,6 +15,17 @@ export default abstract class Effect {
   container: PIXI.Container;
 
   /**
+   * The duration of thie effect.
+   * 
+   * @private
+   * 
+   * @property {number}
+   * 
+   * @default 0
+   */
+  duration: number = 0;
+
+  /**
    * A timestamp of when this effect was started.
    * 
    * @property {DOMHighResTimeStamp}
@@ -79,4 +90,11 @@ export default abstract class Effect {
    * @param {number} [delta] The delta value passed by the game loop.
    */
   abstract update(delta?: number): void;
+
+  /**
+   * Checks to see if the effect has been achieved.
+   * 
+   * @returns {boolean} Returns true if the effect is complete or false otherwise.
+   */
+  abstract criteriaMet?(): boolean;
 }

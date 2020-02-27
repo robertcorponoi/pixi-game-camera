@@ -21,17 +21,6 @@ export default class Shake extends Effect {
   private _intensity: number = 5;
 
   /**
-   * The duration of this shake effect.
-   * 
-   * @private
-   * 
-   * @property {number}
-   * 
-   * @default Infinity
-   */
-  private _duration: number = Infinity;
-
-  /**
    * A reference to the initial pivot of the container.
    * 
    * @private
@@ -50,7 +39,7 @@ export default class Shake extends Effect {
 
     this._intensity = intensity;
 
-    this._duration = duration;
+    this.duration = duration;
 
     this._initialPivot = { x: this.container.pivot.x, y: this.container.pivot.y };
 
@@ -63,7 +52,7 @@ export default class Shake extends Effect {
   update() {
     this.current = performance.now();
 
-    if (this.current - this.started >= this._duration) {
+    if (this.criteriaMet()) {
       this.container.pivot.x = this._initialPivot.x;
       this.container.pivot.y = this._initialPivot.y;
 
@@ -79,5 +68,16 @@ export default class Shake extends Effect {
     this.container.pivot.y = dy;
 
     if (this.useRAF) this.id = requestAnimationFrame(() => this.update());
+  }
+
+  /**
+   * Checks to see if the shake effect is done.
+   * 
+   * @returns {boolean} Returns true if the shake effect is done or not.
+   */
+  criteriaMet(): boolean {
+    if (this.current - this.started >= this.duration) return true;
+
+    return false;
   }
 }

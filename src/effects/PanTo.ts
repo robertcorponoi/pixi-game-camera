@@ -10,15 +10,6 @@ import Vector from '../interface/Vector';
  */
 export default class PanTo extends Effect {
   /**
-   * The duration of this pan effect.
-   * 
-   * @private
-   * 
-   * @property {number}
-   */
-  private _duration: number;
-
-  /**
    * The (x, y) coordinate pair to pan to.
    * 
    * @private
@@ -28,37 +19,61 @@ export default class PanTo extends Effect {
   private _coordinates: Vector;
 
   /**
-   * The easing function that should be used.
+   * The difference in coordinates from the current and the desired.
    * 
    * @private
    * 
-   * @property {Function}
+   * @property {Vector}
    */
-  private _easing: Function;
+  private _difference: Vector;
+
+  /**
+   * Indicates whether the desired x is greater than the current x or not.
+   * 
+   * @private
+   * 
+   * @property {boolean}
+   * 
+   * @default false
+   */
+  private _xIsGreater: boolean = false;
+
+  /**
+   * Indicates whether the desired y is greater than the current y or not.
+   * 
+   * @private
+   * 
+   * @property {boolean}
+   * 
+   * @default false
+   */
+  private _yIsGreater: boolean = false;
 
   /**
    * @param {PIXI.Container} container A reference to the container to apply the panto effect to.
    * @param {number} x The x coordinate to pan to.
    * @param {number} y The y coordinate to pan to.
    * @param {number} duration The amount of time, in milliseconds, that the effect should take.
-   * @param {Function} easing The easing function that should be used.
    */
-  constructor(container: PIXI.Container, x: number, y: number, duration: number, easing: Function) {
+  constructor(container: PIXI.Container, x: number, y: number, duration: number) {
     super(container);
 
     this._coordinates = { x, y };
 
-    this._duration = duration;
+    this.duration = duration;
 
-    this._easing = easing;
+    if (this._coordinates.x > this.container.pivot.x) this._xIsGreater = true;
+
+    if (this._coordinates.y > this.container.pivot.y) this._yIsGreater = true;
+
+    this._difference = { x: Math.abs(this._coordinates.x - this.container.pivot.x), y: Math.abs(this._coordinates.y - this.container.pivot.y) };
   }
 
   /**
    * Updates the status of this effect on a frame by frame basis.
    */
   update() {
-    console.log('updating');
-    if (this._panCriteriaMet()) {
+    if (this.criteriaMet()) {
       this.finished.dispatch();
 
       return;
@@ -66,32 +81,14 @@ export default class PanTo extends Effect {
 
     this.current = performance.now();
     
-    // const timeDiffPercentage: number = this.current / this._duration;
+    const timeDiffPercentage: number = this.current / this.duration;
+    const timeDiffPercentageNegative: number = (this.duration - this.current) / this.duration;
 
-    // const percentageThroughAnimation: number = this._easing(timeDiffPercentage);
+    const xPanAmount: number = this._xIsGreater ? this._difference.x * timeDiffPercentage : this._difference.x * timeDiffPercentageNegative;
+    const yPanAmount: number = this._yIsGreater ? this._difference.y * timeDiffPercentage : this._difference.y * timeDiffPercentageNegative;
 
-    const xLeft: number = this._coordinates.x - this.container.pivot.x;
-    const yLeft: number = this._coordinates.y - this.container.pivot.y;
-
-    // let xPanAmount: number = xLeft * percentageThroughAnimation;
-    // let yPanAmount: number = yLeft * percentageThroughAnimation;
-
-    // console.log(this.current - this.started, percentageThroughAnimation, this.container.pivot);
-
-    // if (this.container.pivot.x + xPanAmount > this.container.width || this.container.pivot.y + yPanAmount > this.container.height) {
-    //   xPanAmount -= this.container.width - (this.container.pivot.x + xPanAmount);
-    //   yPanAmount = this.container.height - (this.container.pivot.y + yPanAmount);
-    // }
-
-    // if (this.container.pivot.x + xPanAmount < 0 || this.container.pivot.y + yPanAmount < 0) {
-    //   xPanAmount = 0;
-    //   yPanAmount = 0;
-    // }
-
-    console.log(this.current - this.started);
-
-    this.container.pivot.x += xLeft / this._duration;
-    this.container.pivot.y += yLeft / this._duration;
+    this.container.pivot.x = xPanAmount;
+    this.container.pivot.y = yPanAmount;
 
     if (this.useRAF) this.id = requestAnimationFrame(() => this.update());
   }
@@ -99,11 +96,9 @@ export default class PanTo extends Effect {
   /**
    * Checks to see if the panto criteria has been met so that the effect can end.
    * 
-   * @private
-   * 
    * @returns {boolean} Returns true if the panto effect is finished or false otherwise.
    */
-  private _panCriteriaMet(): boolean {
+  criteriaMet(): boolean {
     if (this.container.pivot.x > this._coordinates.x - 5 && this.container.pivot.x < this._coordinates.x + 5  && this.container.pivot.y > this._coordinates.y - 5 && this.container.pivot.y < this._coordinates.x + 5) return true;
 
     return false;

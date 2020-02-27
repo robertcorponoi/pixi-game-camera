@@ -3,10 +3,13 @@
 import * as PIXI from 'pixi.js';
 import { easeLinear } from 'd3-ease';
 
-import Effect from '../effects/Effect';
+import Options from '../options/Options';
+
+import Fade from '../effects/Fade';
 import Shake from '../effects/Shake';
-import ZoomTo from '../effects/ZoomTo';
 import PanTo from '../effects/PanTo';
+import ZoomTo from '../effects/ZoomTo';
+import Effect from '../effects/Effect';
 
 /**
  * Camera that can be applied to a game/animation made with pixijs.
@@ -22,6 +25,15 @@ export default class Camera {
   private _container: PIXI.Container;
 
   /**
+   * A reference to the options passed to camera pixi on initialization.
+   * 
+   * @private
+   * 
+   * @private {Options}
+   */
+  private _options: Options;
+
+  /**
    * A reference to the PIXI Ticker, if it's being used.
    * 
    * @private
@@ -31,13 +43,26 @@ export default class Camera {
   private _ticker?: PIXI.Ticker;
 
   /**
-   * @param {PIXI.Container} container The container this camera is focusing on.
-   * @param {PIXI.Ticker} [ticker] A reference to the PIXI Ticker, if it's being used.
+   * A reference to the PIXI Sprite to use for applying certain effects.
+   * 
+   * @private
+   * 
+   * @property {PIXI.Sprite}
    */
-  constructor(container: PIXI.Container, ticker?: PIXI.Ticker) {
+  private _filter?: any;
+
+  /**
+   * @param {PIXI.Container} container The container this camera is focusing on.
+   * @param {PIXI.Ticker} options A reference to the PIXI Ticker, if it's being used.
+   */
+  constructor(container: PIXI.Container, options: Options) {
     this._container = container;
 
-    if (ticker) this._ticker = ticker;
+    this._options = options;
+
+    if (this._options.ticker) this._ticker = this._options.ticker;
+
+    if (this._options.sprite && this._options.texture) this._filter = new this._options.sprite(this._options.texture.WHITE);
   }
 
   /**
@@ -55,12 +80,13 @@ export default class Camera {
   /**
    * Zooms in or out to a specified area.
    * 
-   * @param {number} zoomLevel The zoom level to zoom to with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
+   * @param {number} xZoomLevel The zoom level to zoom horizontally with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
+   * @param {number} yZoomLevel The zoom level to zoom vertically with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
    * @param {number} duration The amount of time, in milliseconds, that the effect should take.
    * @param {Function} [easing=easeLinear] The easing function that should be used.
    */
-  zoomTo(zoomLevel: number, duration: number, easing: Function = easeLinear) {
-    const zoomTo: ZoomTo = new ZoomTo(this._container, zoomLevel, duration, easing);
+  zoomTo(xZoomLevel: number, yZoomLevel: number, duration: number, easing: Function = easeLinear) {
+    const zoomTo: ZoomTo = new ZoomTo(this._container, xZoomLevel, yZoomLevel, duration, easing);
 
     this._addToTicker(zoomTo);
   }
@@ -71,12 +97,27 @@ export default class Camera {
    * @param {number} x The x coordinate to pan to.
    * @param {number} y The y coordinate to pan to.
    * @param {number} duration The amount of time, in milliseconds, that the effect should take.
-   * @param {Function} [easing=easeLinear] The easing function that should be used.
    */
-  panTo(x: number, y: number, duration: number, easing: Function = easeLinear) {
-    const panTo: PanTo = new PanTo(this._container, x, y, duration, easing);
+  panTo(x: number, y: number, duration: number) {
+    const panTo: PanTo = new PanTo(this._container, x, y, duration);
 
     this._addToTicker(panTo);
+  }
+
+  /**
+   * Fades in or out.
+   * 
+   * @param {number} color The hex code of the color to fade in or out of.
+   * @param {number} duration The amount of time until the fade completes.
+   * @param {number} [opacity=100] The percent to fade to. 100% is fully faded and 0% fully visible.
+   * @param {Function} [easing=easeLinear] The easing function that should be used.
+   */
+  fade(color: number, duration: number, opacity: number = 100, easing: Function = easeLinear) {
+    if (!this._optionalPackagesExist()) return;
+
+    const fade: Fade = new Fade(this._container, this._filter, color, duration, easing);
+
+    this._addToTicker(fade);
   }
 
   /**
@@ -94,5 +135,22 @@ export default class Camera {
 
       this._ticker?.add(effectBound);
     } else effect.start();
+  }
+
+  /**
+   * Checks to see if the sprite and texture options are present for effects that use them.
+   * 
+   * @private
+   * 
+   * @returns {boolean} Returns true if the optional packages are present or false otherwise with an error.
+   */
+  private _optionalPackagesExist(): boolean {
+    if (!this._filter) {
+      console.warn('Skipping effect, PIXI.Sprite and PIXI.Texture object must be provided to use this effect.');
+
+      return false;
+    }
+
+    return true;
   }
 }

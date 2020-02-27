@@ -791,6 +791,16 @@ function () {
    */
 
   /**
+   * The duration of thie effect.
+   * 
+   * @private
+   * 
+   * @property {number}
+   * 
+   * @default 0
+   */
+
+  /**
    * A timestamp of when this effect was started.
    * 
    * @property {DOMHighResTimeStamp}
@@ -834,6 +844,8 @@ function () {
 
     _defineProperty(this, "container", void 0);
 
+    _defineProperty(this, "duration", 0);
+
     _defineProperty(this, "started", 0);
 
     _defineProperty(this, "current", 0);
@@ -874,6 +886,127 @@ function () {
 }();
 
 /**
+ * A panning effect that makes the camera focus on a point in the container.
+ */
+
+var PanTo =
+/*#__PURE__*/
+function (_Effect) {
+  _inherits(PanTo, _Effect);
+
+  /**
+   * The easing function to use.
+   * 
+   * @private
+   * 
+   * @property {Function}
+   */
+
+  /**
+   * The color to fade to.
+   * 
+   * @private
+   * 
+   * @property {number}
+   */
+
+  /**
+   * A reference to the camera's filter.
+   * 
+   * @private
+   * 
+   * @property {PIXI.Sprite}
+   */
+
+  /**
+   * @param {PIXI.Container} container A reference to the container to apply the fade effect to.
+   * @param {PIXI.Sprite} filter A reference to the camera filter used to apply this effect.
+   * @param {number} color The hex of the color to fade to.
+   * @param {number} duration The amount of time, in milliseconds, that the effect should take.
+   * @param {Function} easing The easing function to use.
+   */
+  function PanTo(container, filter, color, duration, easing) {
+    var _this;
+
+    _classCallCheck(this, PanTo);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(PanTo).call(this, container));
+
+    _defineProperty(_assertThisInitialized(_this), "_easing", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_color", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_filter", void 0);
+
+    _this._filter = filter;
+    _this._color = color;
+    _this.duration = duration;
+    _this._easing = easing;
+
+    _this._setupBackground();
+
+    return _this;
+  }
+  /**
+   * Updates the status of this effect on a frame by frame basis.
+   */
+
+
+  _createClass(PanTo, [{
+    key: "update",
+    value: function update() {
+      var _this2 = this;
+
+      if (this.criteriaMet()) {
+        this._filter.alpha = 1;
+        this.finished.dispatch();
+        return;
+      }
+
+      this.current = performance.now();
+      var timeDiffPercentage = this.current / this.duration;
+
+      var percentageThroughAnimation = this._easing(timeDiffPercentage);
+
+      var fadeAmount = 1 * percentageThroughAnimation;
+      this._filter.alpha = fadeAmount;
+      if (this.useRAF) this.id = requestAnimationFrame(function () {
+        return _this2.update();
+      });
+    }
+    /**
+     * Checks to see if the fade effect is done or not.
+     * 
+     * @returns {boolean} Returns true if the fade effect is done or not.
+     */
+
+  }, {
+    key: "criteriaMet",
+    value: function criteriaMet() {
+      if (this._filter.alpha >= 0.99) return true;
+      return false;
+    }
+    /**
+     * Sets up the sprite that's used for the background.
+     * 
+     * @private
+     */
+
+  }, {
+    key: "_setupBackground",
+    value: function _setupBackground() {
+      this._filter.width = this.container.width;
+      this._filter.height = this.container.height;
+      this._filter.tint = this._color;
+      this._filter.alpha = 0;
+      this.container.addChild(this._filter);
+    }
+  }]);
+
+  return PanTo;
+}(Effect);
+
+/**
  * A Shake effect involves shaking the camera at various amounts up to a sepcified intensity.
  */
 var Shake =
@@ -889,16 +1022,6 @@ function (_Effect) {
    * @property {number}
    * 
    * @default 5
-   */
-
-  /**
-   * The duration of this shake effect.
-   * 
-   * @private
-   * 
-   * @property {number}
-   * 
-   * @default Infinity
    */
 
   /**
@@ -923,12 +1046,10 @@ function (_Effect) {
 
     _defineProperty(_assertThisInitialized(_this), "_intensity", 5);
 
-    _defineProperty(_assertThisInitialized(_this), "_duration", Infinity);
-
     _defineProperty(_assertThisInitialized(_this), "_initialPivot", void 0);
 
     _this._intensity = intensity;
-    _this._duration = duration;
+    _this.duration = duration;
     _this._initialPivot = {
       x: _this.container.pivot.x,
       y: _this.container.pivot.y
@@ -948,7 +1069,7 @@ function (_Effect) {
 
       this.current = performance.now();
 
-      if (this.current - this.started >= this._duration) {
+      if (this.criteriaMet()) {
         this.container.pivot.x = this._initialPivot.x;
         this.container.pivot.y = this._initialPivot.y;
         this.finished.dispatch();
@@ -965,9 +1086,142 @@ function (_Effect) {
         return _this2.update();
       });
     }
+    /**
+     * Checks to see if the shake effect is done.
+     * 
+     * @returns {boolean} Returns true if the shake effect is done or not.
+     */
+
+  }, {
+    key: "criteriaMet",
+    value: function criteriaMet() {
+      if (this.current - this.started >= this.duration) return true;
+      return false;
+    }
   }]);
 
   return Shake;
+}(Effect);
+
+/**
+ * A panning effect that makes the camera focus on a point in the container.
+ */
+var PanTo$1 =
+/*#__PURE__*/
+function (_Effect) {
+  _inherits(PanTo, _Effect);
+
+  /**
+   * The (x, y) coordinate pair to pan to.
+   * 
+   * @private
+   * 
+   * @property {Vector}
+   */
+
+  /**
+   * The difference in coordinates from the current and the desired.
+   * 
+   * @private
+   * 
+   * @property {Vector}
+   */
+
+  /**
+   * Indicates whether the desired x is greater than the current x or not.
+   * 
+   * @private
+   * 
+   * @property {boolean}
+   * 
+   * @default false
+   */
+
+  /**
+   * Indicates whether the desired y is greater than the current y or not.
+   * 
+   * @private
+   * 
+   * @property {boolean}
+   * 
+   * @default false
+   */
+
+  /**
+   * @param {PIXI.Container} container A reference to the container to apply the panto effect to.
+   * @param {number} x The x coordinate to pan to.
+   * @param {number} y The y coordinate to pan to.
+   * @param {number} duration The amount of time, in milliseconds, that the effect should take.
+   */
+  function PanTo(container, x, y, duration) {
+    var _this;
+
+    _classCallCheck(this, PanTo);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(PanTo).call(this, container));
+
+    _defineProperty(_assertThisInitialized(_this), "_coordinates", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_difference", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_xIsGreater", false);
+
+    _defineProperty(_assertThisInitialized(_this), "_yIsGreater", false);
+
+    _this._coordinates = {
+      x: x,
+      y: y
+    };
+    _this.duration = duration;
+    if (_this._coordinates.x > _this.container.pivot.x) _this._xIsGreater = true;
+    if (_this._coordinates.y > _this.container.pivot.y) _this._yIsGreater = true;
+    _this._difference = {
+      x: Math.abs(_this._coordinates.x - _this.container.pivot.x),
+      y: Math.abs(_this._coordinates.y - _this.container.pivot.y)
+    };
+    return _this;
+  }
+  /**
+   * Updates the status of this effect on a frame by frame basis.
+   */
+
+
+  _createClass(PanTo, [{
+    key: "update",
+    value: function update() {
+      var _this2 = this;
+
+      if (this.criteriaMet()) {
+        this.finished.dispatch();
+        return;
+      }
+
+      this.current = performance.now();
+      var timeDiffPercentage = this.current / this.duration;
+      var timeDiffPercentageNegative = (this.duration - this.current) / this.duration;
+      var xPanAmount = this._xIsGreater ? this._difference.x * timeDiffPercentage : this._difference.x * timeDiffPercentageNegative;
+      var yPanAmount = this._yIsGreater ? this._difference.y * timeDiffPercentage : this._difference.y * timeDiffPercentageNegative;
+      this.container.pivot.x = xPanAmount;
+      this.container.pivot.y = yPanAmount;
+      if (this.useRAF) this.id = requestAnimationFrame(function () {
+        return _this2.update();
+      });
+    }
+    /**
+     * Checks to see if the panto criteria has been met so that the effect can end.
+     * 
+     * @returns {boolean} Returns true if the panto effect is finished or false otherwise.
+     */
+
+  }, {
+    key: "criteriaMet",
+    value: function criteriaMet() {
+      if (this.container.pivot.x > this._coordinates.x - 5 && this.container.pivot.x < this._coordinates.x + 5 && this.container.pivot.y > this._coordinates.y - 5 && this.container.pivot.y < this._coordinates.x + 5) return true;
+      return false;
+    }
+  }]);
+
+  return PanTo;
 }(Effect);
 
 /**
@@ -987,14 +1241,6 @@ function (_Effect) {
    */
 
   /**
-   * The duration of this zoom effect.
-   * 
-   * @private
-   * 
-   * @property {number}
-   */
-
-  /**
    * A reference to the easing function to use for this effect.
    * 
    * @private
@@ -1011,22 +1257,29 @@ function (_Effect) {
    */
 
   /**
-   * Indicates whether we're zooming in or out.
+   * Indicates whether the desired x zoom level is greater than the current zoom level or not.
    * 
    * @private
    * 
    * @property {boolean}
+   */
+
+  /**
+   * Indicates whether the desired y zoom level is greater than the current zoom level or not.
    * 
-   * @default false
+   * @private
+   * 
+   * @property {boolean}
    */
 
   /**
    * @param {PIXI.Container} container A reference to the container to apply the zoomto effect to.
-   * @param {number} zoomLevel The zoom level to zoom to with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
+   * @param {number} xZoomLevel The zoom level to zoom horizontally with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
+   * @param {number} yZoomLevel The zoom level to zoom vertically with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
    * @param {number} duration The amount of time, in milliseconds, that the effect should take.
    * @param {Function} easing The easing function that should be used.
    */
-  function ZoomTo(container, zoomLevel, duration, easing) {
+  function ZoomTo(container, xZoomLevel, yZoomLevel, duration, easing) {
     var _this;
 
     _classCallCheck(this, ZoomTo);
@@ -1035,25 +1288,26 @@ function (_Effect) {
 
     _defineProperty(_assertThisInitialized(_this), "_desiredZoomLevel", void 0);
 
-    _defineProperty(_assertThisInitialized(_this), "_duration", void 0);
-
     _defineProperty(_assertThisInitialized(_this), "_easing", void 0);
 
-    _defineProperty(_assertThisInitialized(_this), "_currentZoomLevel", void 0);
+    _defineProperty(_assertThisInitialized(_this), "_initialZoomLevel", void 0);
 
-    _defineProperty(_assertThisInitialized(_this), "_zoomIn", false);
+    _defineProperty(_assertThisInitialized(_this), "_xIsGreater", false);
+
+    _defineProperty(_assertThisInitialized(_this), "_yIsGreater", false);
 
     _this._desiredZoomLevel = {
-      x: zoomLevel,
-      y: zoomLevel
+      x: xZoomLevel,
+      y: yZoomLevel
     };
-    _this._duration = duration;
+    _this.duration = duration;
     _this._easing = easing;
-    _this._currentZoomLevel = {
+    _this._initialZoomLevel = {
       x: _this.container.scale.x,
       y: _this.container.scale.y
     };
-    if (zoomLevel > _this._currentZoomLevel.x) _this._zoomIn = true;
+    if (_this._desiredZoomLevel.x > _this._initialZoomLevel.x) _this._xIsGreater = true;
+    if (_this._desiredZoomLevel.y > _this._initialZoomLevel.y) _this._yIsGreater = true;
     return _this;
   }
   /**
@@ -1066,19 +1320,20 @@ function (_Effect) {
     value: function update() {
       var _this2 = this;
 
-      if (this._zoomCriteriaMet()) {
+      if (this.criteriaMet() || this.current > this.duration) {
         this.finished.dispatch();
         return;
       }
 
       this.current = performance.now();
-      var timeDiffPercentage = this.current / this._duration;
+      var timeDiffPercentage = this.current / this.duration;
 
       var percentageThroughAnimation = this._easing(timeDiffPercentage);
 
-      var zoomAmount = this._desiredZoomLevel.x * percentageThroughAnimation;
-      this.container.scale.x = zoomAmount + 1;
-      this.container.scale.y = zoomAmount + 1;
+      var xZoomAmount = this._desiredZoomLevel.x * percentageThroughAnimation;
+      var yZoomAmount = this._desiredZoomLevel.y * percentageThroughAnimation;
+      this.container.scale.x = this._xIsGreater ? this._initialZoomLevel.x + xZoomAmount / 2 : this._initialZoomLevel.x - xZoomAmount;
+      this.container.scale.y = this._yIsGreater ? this._initialZoomLevel.y + yZoomAmount / 2 : this._initialZoomLevel.y - yZoomAmount;
       if (this.useRAF) this.id = requestAnimationFrame(function () {
         return _this2.update();
       });
@@ -1094,9 +1349,9 @@ function (_Effect) {
      */
 
   }, {
-    key: "_zoomCriteriaMet",
-    value: function _zoomCriteriaMet() {
-      if (this.container.scale.x > this._desiredZoomLevel.x - 0.1 && this.container.scale.x < this._desiredZoomLevel.x + 0.1 && this.container.scale.y > this._desiredZoomLevel.y - 0.1 && this.container.scale.y < this._desiredZoomLevel.y + 0.1) return true;
+    key: "criteriaMet",
+    value: function criteriaMet() {
+      if (this.container.scale.x > this._desiredZoomLevel.x - 0.01 && this.container.scale.x < this._desiredZoomLevel.x + 0.01 && this.container.scale.y > this._desiredZoomLevel.y - 0.01 && this.container.scale.y < this._desiredZoomLevel.y + 0.01) return true;
       return false;
     }
   }]);
@@ -1105,128 +1360,8 @@ function (_Effect) {
 }(Effect);
 
 /**
- * A panning effect that makes the camera focus on a point in the container.
- */
-var PanTo =
-/*#__PURE__*/
-function (_Effect) {
-  _inherits(PanTo, _Effect);
-
-  /**
-   * The duration of this pan effect.
-   * 
-   * @private
-   * 
-   * @property {number}
-   */
-
-  /**
-   * The (x, y) coordinate pair to pan to.
-   * 
-   * @private
-   * 
-   * @property {Vector}
-   */
-
-  /**
-   * The easing function that should be used.
-   * 
-   * @private
-   * 
-   * @property {Function}
-   */
-
-  /**
-   * @param {PIXI.Container} container A reference to the container to apply the panto effect to.
-   * @param {number} x The x coordinate to pan to.
-   * @param {number} y The y coordinate to pan to.
-   * @param {number} duration The amount of time, in milliseconds, that the effect should take.
-   * @param {Function} easing The easing function that should be used.
-   */
-  function PanTo(container, x, y, duration, easing) {
-    var _this;
-
-    _classCallCheck(this, PanTo);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(PanTo).call(this, container));
-
-    _defineProperty(_assertThisInitialized(_this), "_duration", void 0);
-
-    _defineProperty(_assertThisInitialized(_this), "_coordinates", void 0);
-
-    _defineProperty(_assertThisInitialized(_this), "_easing", void 0);
-
-    _this._coordinates = {
-      x: x,
-      y: y
-    };
-    _this._duration = duration;
-    _this._easing = easing;
-    return _this;
-  }
-  /**
-   * Updates the status of this effect on a frame by frame basis.
-   */
-
-
-  _createClass(PanTo, [{
-    key: "update",
-    value: function update() {
-      var _this2 = this;
-
-      console.log('updating');
-
-      if (this._panCriteriaMet()) {
-        this.finished.dispatch();
-        return;
-      }
-
-      this.current = performance.now(); // const timeDiffPercentage: number = this.current / this._duration;
-      // const percentageThroughAnimation: number = this._easing(timeDiffPercentage);
-
-      var xLeft = this._coordinates.x - this.container.pivot.x;
-      var yLeft = this._coordinates.y - this.container.pivot.y; // let xPanAmount: number = xLeft * percentageThroughAnimation;
-      // let yPanAmount: number = yLeft * percentageThroughAnimation;
-      // console.log(this.current - this.started, percentageThroughAnimation, this.container.pivot);
-      // if (this.container.pivot.x + xPanAmount > this.container.width || this.container.pivot.y + yPanAmount > this.container.height) {
-      //   xPanAmount -= this.container.width - (this.container.pivot.x + xPanAmount);
-      //   yPanAmount = this.container.height - (this.container.pivot.y + yPanAmount);
-      // }
-      // if (this.container.pivot.x + xPanAmount < 0 || this.container.pivot.y + yPanAmount < 0) {
-      //   xPanAmount = 0;
-      //   yPanAmount = 0;
-      // }
-
-      console.log(this.current - this.started);
-      this.container.pivot.x += xLeft / this._duration;
-      this.container.pivot.y += yLeft / this._duration;
-      if (this.useRAF) this.id = requestAnimationFrame(function () {
-        return _this2.update();
-      });
-    }
-    /**
-     * Checks to see if the panto criteria has been met so that the effect can end.
-     * 
-     * @private
-     * 
-     * @returns {boolean} Returns true if the panto effect is finished or false otherwise.
-     */
-
-  }, {
-    key: "_panCriteriaMet",
-    value: function _panCriteriaMet() {
-      if (this.container.pivot.x > this._coordinates.x - 5 && this.container.pivot.x < this._coordinates.x + 5 && this.container.pivot.y > this._coordinates.y - 5 && this.container.pivot.y < this._coordinates.x + 5) return true;
-      return false;
-    }
-  }]);
-
-  return PanTo;
-}(Effect);
-
-/**
  * Camera that can be applied to a game/animation made with pixijs.
  */
-
 var Camera =
 /*#__PURE__*/
 function () {
@@ -1239,6 +1374,14 @@ function () {
    */
 
   /**
+   * A reference to the options passed to camera pixi on initialization.
+   * 
+   * @private
+   * 
+   * @private {Options}
+   */
+
+  /**
    * A reference to the PIXI Ticker, if it's being used.
    * 
    * @private
@@ -1247,18 +1390,32 @@ function () {
    */
 
   /**
-   * @param {PIXI.Container} container The container this camera is focusing on.
-   * @param {PIXI.Ticker} [ticker] A reference to the PIXI Ticker, if it's being used.
+   * A reference to the PIXI Sprite to use for applying certain effects.
+   * 
+   * @private
+   * 
+   * @property {PIXI.Sprite}
    */
-  function Camera(container, ticker) {
+
+  /**
+   * @param {PIXI.Container} container The container this camera is focusing on.
+   * @param {PIXI.Ticker} options A reference to the PIXI Ticker, if it's being used.
+   */
+  function Camera(container, options) {
     _classCallCheck(this, Camera);
 
     _defineProperty(this, "_container", void 0);
 
+    _defineProperty(this, "_options", void 0);
+
     _defineProperty(this, "_ticker", void 0);
 
+    _defineProperty(this, "_filter", void 0);
+
     this._container = container;
-    if (ticker) this._ticker = ticker;
+    this._options = options;
+    if (this._options.ticker) this._ticker = this._options.ticker;
+    if (this._options.sprite && this._options.texture) this._filter = new this._options.sprite(this._options.texture.WHITE);
   }
   /**
    * Creates a new shake effect that can be used.
@@ -1280,16 +1437,17 @@ function () {
     /**
      * Zooms in or out to a specified area.
      * 
-     * @param {number} zoomLevel The zoom level to zoom to with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
+     * @param {number} xZoomLevel The zoom level to zoom horizontally with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
+     * @param {number} yZoomLevel The zoom level to zoom vertically with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
      * @param {number} duration The amount of time, in milliseconds, that the effect should take.
      * @param {Function} [easing=easeLinear] The easing function that should be used.
      */
 
   }, {
     key: "zoomTo",
-    value: function zoomTo(zoomLevel, duration) {
-      var easing = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : linear;
-      var zoomTo = new ZoomTo(this._container, zoomLevel, duration, easing);
+    value: function zoomTo(xZoomLevel, yZoomLevel, duration) {
+      var easing = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : linear;
+      var zoomTo = new ZoomTo(this._container, xZoomLevel, yZoomLevel, duration, easing);
 
       this._addToTicker(zoomTo);
     }
@@ -1299,16 +1457,32 @@ function () {
      * @param {number} x The x coordinate to pan to.
      * @param {number} y The y coordinate to pan to.
      * @param {number} duration The amount of time, in milliseconds, that the effect should take.
-     * @param {Function} [easing=easeLinear] The easing function that should be used.
      */
 
   }, {
     key: "panTo",
     value: function panTo(x, y, duration) {
-      var easing = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : linear;
-      var panTo = new PanTo(this._container, x, y, duration, easing);
+      var panTo = new PanTo$1(this._container, x, y, duration);
 
       this._addToTicker(panTo);
+    }
+    /**
+     * Fades in or out.
+     * 
+     * @param {number} color The hex code of the color to fade in or out of.
+     * @param {number} duration The amount of time until the fade completes.
+     * @param {number} [opacity=100] The percent to fade to. 100% is fully faded and 0% fully visible.
+     * @param {Function} [easing=easeLinear] The easing function that should be used.
+     */
+
+  }, {
+    key: "fade",
+    value: function fade(color, duration) {
+      var easing = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : linear;
+      if (!this._optionalPackagesExist()) return;
+      var fade = new PanTo(this._container, this._filter, color, duration, easing);
+
+      this._addToTicker(fade);
     }
     /**
      * Adds an effect to the PIXI Ticker if it's being used and removes it when necessary.
@@ -1336,6 +1510,24 @@ function () {
         (_this$_ticker2 = this._ticker) === null || _this$_ticker2 === void 0 ? void 0 : _this$_ticker2.add(effectBound);
       } else effect.start();
     }
+    /**
+     * Checks to see if the sprite and texture options are present for effects that use them.
+     * 
+     * @private
+     * 
+     * @returns {boolean} Returns true if the optional packages are present or false otherwise with an error.
+     */
+
+  }, {
+    key: "_optionalPackagesExist",
+    value: function _optionalPackagesExist() {
+      if (!this._filter) {
+        console.warn('Skipping effect, PIXI.Sprite and PIXI.Texture object must be provided to use this effect.');
+        return false;
+      }
+
+      return true;
+    }
   }]);
 
   return Camera;
@@ -1345,6 +1537,22 @@ function () {
  * A reference to the options passed to camera-pixi on initialization.
  */
 var Options =
+/**
+ * A reference to the PIXI.Sprite object.
+ * 
+ * This is necessary for some effects such as fade effects.
+ * 
+ * @property {PIXI.Sprite}
+ */
+
+/**
+ * A reference to the PIXI.Texture object.
+ * 
+ * This is used along with the PIXI.Sprite option to set textures for some of the effects.
+ * 
+ * @property {PIXI.Texture}
+ */
+
 /**
  * A reference to the PIXI ticker if it's being used.
  * 
@@ -1359,13 +1567,17 @@ var Options =
 function Options(options) {
   _classCallCheck(this, Options);
 
+  _defineProperty(this, "sprite", void 0);
+
+  _defineProperty(this, "texture", void 0);
+
   _defineProperty(this, "ticker", void 0);
 
   Object.assign(this, options);
 };
 
 /**
- * TODO
+ * A camera with effects for your PIXI application that makes no assumption of how you use PIXI.
  */
 
 var PIXICamera =
@@ -1380,14 +1592,6 @@ function () {
    */
 
   /**
-   * A reference to the cameras created.
-   *
-   * @private
-   *
-   * @property {Array<Camera>}
-   */
-
-  /**
    * A reference to the easing functions that can be used.
    * 
    * @private
@@ -1397,6 +1601,8 @@ function () {
 
   /**
    * @param {Object} [options]
+   * @param {PIXI.Sprite} [options.sprite] A reference to the PIXI sprite object used for some effects such as fade.\
+   * @param {PIXI.Texture} [options.texture] A reference to the PIXI.Texture object. This is used along with the PIXI.Sprite option to set textures for some of the effects.
    * @param {PIXI.Ticker} [options.ticker] A reference to the PIXI ticker if it's being used. If the PIXI ticker is not used then updates will have to be called manually.
    */
   function PIXICamera() {
@@ -1405,8 +1611,6 @@ function () {
     _classCallCheck(this, PIXICamera);
 
     _defineProperty(this, "_options", void 0);
-
-    _defineProperty(this, "_cameras", []);
 
     _defineProperty(this, "_EASING", easing);
 
@@ -1430,10 +1634,7 @@ function () {
      * @returns {Camera}
      */
     value: function camera(container) {
-      var cam = new Camera(container, this._options.ticker);
-
-      this._cameras.push(cam);
-
+      var cam = new Camera(container, this._options);
       return cam;
     }
   }, {
