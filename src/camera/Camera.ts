@@ -62,7 +62,7 @@ export default class Camera {
 
     if (this._options.ticker) this._ticker = this._options.ticker;
 
-    if (this._options.sprite && this._options.texture) this._filter = new this._options.sprite(this._options.texture.WHITE);
+    if (this._options.sprite && this._options.texture) this._setupFilter();
   }
 
   /**
@@ -78,7 +78,7 @@ export default class Camera {
   }
 
   /**
-   * Zooms in or out to a specified area.
+   * Zooms in or out.
    * 
    * @param {number} xZoomLevel The zoom level to zoom horizontally with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
    * @param {number} yZoomLevel The zoom level to zoom vertically with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
@@ -108,14 +108,14 @@ export default class Camera {
    * Fades in or out.
    * 
    * @param {number} color The hex code of the color to fade in or out of.
+   * @param {number} opacity The opacity to fade to with 1 is fully faded and 0 being the game is fully visible.
    * @param {number} duration The amount of time until the fade completes.
-   * @param {number} [opacity=100] The percent to fade to. 100% is fully faded and 0% fully visible.
    * @param {Function} [easing=easeLinear] The easing function that should be used.
    */
-  fade(color: number, duration: number, opacity: number = 100, easing: Function = easeLinear) {
+  fadeTo(color: number, opacity: number = 1, duration: number, easing: Function = easeLinear) {
     if (!this._optionalPackagesExist()) return;
 
-    const fade: Fade = new Fade(this._container, this._filter, color, duration, easing);
+    const fade: Fade = new Fade(this._container, this._filter, color, duration, opacity, easing);
 
     this._addToTicker(fade);
   }
@@ -152,5 +152,20 @@ export default class Camera {
     }
 
     return true;
+  }
+
+  /**
+   * Sets up the filter, if available, to be used in effects.
+   * 
+   * @private
+   */
+  private _setupFilter() {
+    this._filter = new this._options.sprite(this._options.texture.WHITE);
+    
+    this._filter.width = this._container.width;
+    this._filter.height = this._container.height;
+    this._filter.alpha = 0;
+
+    this._container.addChild(this._filter);
   }
 }

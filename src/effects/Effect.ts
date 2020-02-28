@@ -71,6 +71,8 @@ export default abstract class Effect {
    */
   constructor(container: PIXI.Container) {
     this.container = container;
+
+    this.started = performance.now();
   }
 
   /**

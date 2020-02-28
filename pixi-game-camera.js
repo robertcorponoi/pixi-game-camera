@@ -857,6 +857,7 @@ function () {
     _defineProperty(this, "id", void 0);
 
     this.container = container;
+    this.started = performance.now();
   }
   /**
    * Starts the requestAnimationFrame loop to use this effect if a Ticker is not provided.
@@ -895,11 +896,11 @@ function (_Effect) {
   _inherits(PanTo, _Effect);
 
   /**
-   * The easing function to use.
+   * A reference to the camera's filter.
    * 
    * @private
    * 
-   * @property {Function}
+   * @property {PIXI.Sprite}
    */
 
   /**
@@ -911,11 +912,37 @@ function (_Effect) {
    */
 
   /**
-   * A reference to the camera's filter.
+   * The opacity to set the filter to.
    * 
    * @private
    * 
-   * @property {PIXI.Sprite}
+   * @property {number}
+   */
+
+  /**
+   * The easing function to use.
+   * 
+   * @private
+   * 
+   * @property {Function}
+   */
+
+  /**
+   * Indicates whether its fading in or out.
+   * 
+   * @private
+   * 
+   * @property {boolean}
+   * 
+   * @default true
+   */
+
+  /**
+   * The initial opacity of the filter as of the start of this effect.
+   * 
+   * @private
+   * 
+   * @property {number}
    */
 
   /**
@@ -925,26 +952,33 @@ function (_Effect) {
    * @param {number} duration The amount of time, in milliseconds, that the effect should take.
    * @param {Function} easing The easing function to use.
    */
-  function PanTo(container, filter, color, duration, easing) {
+  function PanTo(container, filter, color, duration, opacity, easing) {
     var _this;
 
     _classCallCheck(this, PanTo);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(PanTo).call(this, container));
 
-    _defineProperty(_assertThisInitialized(_this), "_easing", void 0);
+    _defineProperty(_assertThisInitialized(_this), "_filter", void 0);
 
     _defineProperty(_assertThisInitialized(_this), "_color", void 0);
 
-    _defineProperty(_assertThisInitialized(_this), "_filter", void 0);
+    _defineProperty(_assertThisInitialized(_this), "_opacity", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_easing", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_fadeOut", true);
+
+    _defineProperty(_assertThisInitialized(_this), "_initialOpacity", void 0);
 
     _this._filter = filter;
     _this._color = color;
     _this.duration = duration;
+    _this._opacity = opacity;
     _this._easing = easing;
-
-    _this._setupBackground();
-
+    _this._filter.tint = _this._color;
+    _this._initialOpacity = _this._filter.alpha;
+    if (_this._filter.alpha > _this._opacity) _this._fadeOut = false;
     return _this;
   }
   /**
@@ -958,18 +992,18 @@ function (_Effect) {
       var _this2 = this;
 
       if (this.criteriaMet()) {
-        this._filter.alpha = 1;
+        this._filter.alpha = this._opacity;
         this.finished.dispatch();
         return;
       }
 
       this.current = performance.now();
-      var timeDiffPercentage = this.current / this.duration;
+      var timeDiffPercentage = (this.current - this.started) / this.duration;
 
       var percentageThroughAnimation = this._easing(timeDiffPercentage);
 
       var fadeAmount = 1 * percentageThroughAnimation;
-      this._filter.alpha = fadeAmount;
+      this._filter.alpha = this._fadeOut ? fadeAmount : this._initialOpacity - fadeAmount;
       if (this.useRAF) this.id = requestAnimationFrame(function () {
         return _this2.update();
       });
@@ -983,23 +1017,8 @@ function (_Effect) {
   }, {
     key: "criteriaMet",
     value: function criteriaMet() {
-      if (this._filter.alpha >= 0.99) return true;
+      if (this._fadeOut && this._filter.alpha >= this._opacity - 0.01 || !this._fadeOut && this._filter.alpha <= this._opacity + 0.01) return true;
       return false;
-    }
-    /**
-     * Sets up the sprite that's used for the background.
-     * 
-     * @private
-     */
-
-  }, {
-    key: "_setupBackground",
-    value: function _setupBackground() {
-      this._filter.width = this.container.width;
-      this._filter.height = this.container.height;
-      this._filter.tint = this._color;
-      this._filter.alpha = 0;
-      this.container.addChild(this._filter);
     }
   }]);
 
@@ -1197,7 +1216,7 @@ function (_Effect) {
       }
 
       this.current = performance.now();
-      var timeDiffPercentage = this.current / this.duration;
+      var timeDiffPercentage = (this.current - this.started) / this.duration;
       var timeDiffPercentageNegative = (this.duration - this.current) / this.duration;
       var xPanAmount = this._xIsGreater ? this._difference.x * timeDiffPercentage : this._difference.x * timeDiffPercentageNegative;
       var yPanAmount = this._yIsGreater ? this._difference.y * timeDiffPercentage : this._difference.y * timeDiffPercentageNegative;
@@ -1216,7 +1235,7 @@ function (_Effect) {
   }, {
     key: "criteriaMet",
     value: function criteriaMet() {
-      if (this.container.pivot.x > this._coordinates.x - 5 && this.container.pivot.x < this._coordinates.x + 5 && this.container.pivot.y > this._coordinates.y - 5 && this.container.pivot.y < this._coordinates.x + 5) return true;
+      if (this.container.pivot.x > this._coordinates.x - 5 && this.container.pivot.x < this._coordinates.x + 5 && this.container.pivot.y > this._coordinates.y - 5 && this.container.pivot.y < this._coordinates.y + 5) return true;
       return false;
     }
   }]);
@@ -1326,7 +1345,7 @@ function (_Effect) {
       }
 
       this.current = performance.now();
-      var timeDiffPercentage = this.current / this.duration;
+      var timeDiffPercentage = (this.current - this.started) / this.duration;
 
       var percentageThroughAnimation = this._easing(timeDiffPercentage);
 
@@ -1415,7 +1434,7 @@ function () {
     this._container = container;
     this._options = options;
     if (this._options.ticker) this._ticker = this._options.ticker;
-    if (this._options.sprite && this._options.texture) this._filter = new this._options.sprite(this._options.texture.WHITE);
+    if (this._options.sprite && this._options.texture) this._setupFilter();
   }
   /**
    * Creates a new shake effect that can be used.
@@ -1435,7 +1454,7 @@ function () {
       this._addToTicker(shake);
     }
     /**
-     * Zooms in or out to a specified area.
+     * Zooms in or out.
      * 
      * @param {number} xZoomLevel The zoom level to zoom horizontally with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
      * @param {number} yZoomLevel The zoom level to zoom vertically with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
@@ -1470,17 +1489,19 @@ function () {
      * Fades in or out.
      * 
      * @param {number} color The hex code of the color to fade in or out of.
+     * @param {number} opacity The opacity to fade to with 1 is fully faded and 0 being the game is fully visible.
      * @param {number} duration The amount of time until the fade completes.
-     * @param {number} [opacity=100] The percent to fade to. 100% is fully faded and 0% fully visible.
      * @param {Function} [easing=easeLinear] The easing function that should be used.
      */
 
   }, {
-    key: "fade",
-    value: function fade(color, duration) {
+    key: "fadeTo",
+    value: function fadeTo(color) {
+      var opacity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+      var duration = arguments.length > 2 ? arguments[2] : undefined;
       var easing = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : linear;
       if (!this._optionalPackagesExist()) return;
-      var fade = new PanTo(this._container, this._filter, color, duration, easing);
+      var fade = new PanTo(this._container, this._filter, color, duration, opacity, easing);
 
       this._addToTicker(fade);
     }
@@ -1527,6 +1548,22 @@ function () {
       }
 
       return true;
+    }
+    /**
+     * Sets up the filter, if available, to be used in effects.
+     * 
+     * @private
+     */
+
+  }, {
+    key: "_setupFilter",
+    value: function _setupFilter() {
+      this._filter = new this._options.sprite(this._options.texture.WHITE);
+      this._filter.width = this._container.width;
+      this._filter.height = this._container.height;
+      this._filter.alpha = 0;
+
+      this._container.addChild(this._filter);
     }
   }]);
 
@@ -1577,10 +1614,10 @@ function Options(options) {
 };
 
 /**
- * A camera with effects for your PIXI application that makes no assumption of how you use PIXI.
+ * A non-opinioned implementation for adding cameras to your PIXI application via containers.
  */
 
-var PIXICamera =
+var PixiGameCamera =
 /*#__PURE__*/
 function () {
   /**
@@ -1605,10 +1642,10 @@ function () {
    * @param {PIXI.Texture} [options.texture] A reference to the PIXI.Texture object. This is used along with the PIXI.Sprite option to set textures for some of the effects.
    * @param {PIXI.Ticker} [options.ticker] A reference to the PIXI ticker if it's being used. If the PIXI ticker is not used then updates will have to be called manually.
    */
-  function PIXICamera() {
+  function PixiGameCamera() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-    _classCallCheck(this, PIXICamera);
+    _classCallCheck(this, PixiGameCamera);
 
     _defineProperty(this, "_options", void 0);
 
@@ -1623,7 +1660,7 @@ function () {
    */
 
 
-  _createClass(PIXICamera, [{
+  _createClass(PixiGameCamera, [{
     key: "camera",
 
     /**
@@ -1644,7 +1681,7 @@ function () {
     }
   }]);
 
-  return PIXICamera;
+  return PixiGameCamera;
 }();
 
-export default PIXICamera;
+export default PixiGameCamera;

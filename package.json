@@ -1,6 +1,6 @@
 {
-  "name": "camera-pixi",
-  "version": "0.0.2",
+  "name": "pixi-game-camera",
+  "version": "0.0.6",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,21 +12,35 @@
     "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
     "bundle": "rollup -c",
     "bundle:watch": "rollup -c --watch",
-    "test": "node test/server.js"
+    "test": "node test/server.js",
+    "test:custom": "node test/server.js"
   },
-  "repository": {},
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:robertcorponoi/pixi-game-camera.git"
+  },
+  "keywords": [
+    "pixi",
+    "PIXI",
+    "pixi.js",
+    "game",
+    "camera",
+    "shake",
+    "fade",
+    "zoom",
+    "pan"
+  ],
+  "author": "Robert Corponoi",
   "license": "MIT",
-  "module": "camera-pixi.js",
+  "module": "pixi-game-camera.js",
   "typings": "lib/index.d.ts",
   "devDependencies": {
     "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.8.4",
+    "@babel/core": "^7.8.6",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-proposal-numeric-separator": "^7.8.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
-    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-env": "^7.8.6",
     "@babel/preset-typescript": "^7.8.3",
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",

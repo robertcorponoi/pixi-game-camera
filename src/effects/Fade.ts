@@ -9,13 +9,13 @@ import Effect from './Effect';
  */
 export default class PanTo extends Effect {
   /**
-   * The easing function to use.
+   * A reference to the camera's filter.
    * 
    * @private
    * 
-   * @property {Function}
+   * @property {PIXI.Sprite}
    */
-  private _easing: Function;
+  private _filter: PIXI.Sprite;
 
   /**
    * The color to fade to.
@@ -27,13 +27,42 @@ export default class PanTo extends Effect {
   private _color: number;
 
   /**
-   * A reference to the camera's filter.
+   * The opacity to set the filter to.
    * 
    * @private
    * 
-   * @property {PIXI.Sprite}
+   * @property {number}
    */
-  private _filter: PIXI.Sprite;
+  private _opacity: number;
+
+  /**
+   * The easing function to use.
+   * 
+   * @private
+   * 
+   * @property {Function}
+   */
+  private _easing: Function;
+
+  /**
+   * Indicates whether its fading in or out.
+   * 
+   * @private
+   * 
+   * @property {boolean}
+   * 
+   * @default true
+   */
+  private _fadeOut: boolean = true;
+
+  /**
+   * The initial opacity of the filter as of the start of this effect.
+   * 
+   * @private
+   * 
+   * @property {number}
+   */
+  private _initialOpacity: number;
 
   /**
    * @param {PIXI.Container} container A reference to the container to apply the fade effect to.
@@ -42,7 +71,7 @@ export default class PanTo extends Effect {
    * @param {number} duration The amount of time, in milliseconds, that the effect should take.
    * @param {Function} easing The easing function to use.
    */
-  constructor(container: PIXI.Container, filter: PIXI.Sprite, color: number, duration: number, easing: Function) {
+  constructor(container: PIXI.Container, filter: PIXI.Sprite, color: number, duration: number, opacity: number, easing: Function) {
     super(container);
 
     this._filter = filter;
@@ -51,9 +80,15 @@ export default class PanTo extends Effect {
 
     this.duration = duration;
 
+    this._opacity = opacity;
+
     this._easing = easing;
 
-    this._setupBackground();
+    this._filter.tint = this._color;
+
+    this._initialOpacity = this._filter.alpha;
+
+    if (this._filter.alpha > this._opacity) this._fadeOut = false;
   }
 
   /**
@@ -61,8 +96,8 @@ export default class PanTo extends Effect {
    */
   update() {
     if (this.criteriaMet()) {
-      this._filter.alpha = 1;
-      
+      this._filter.alpha = this._opacity;
+
       this.finished.dispatch();
 
       return;
@@ -70,13 +105,13 @@ export default class PanTo extends Effect {
 
     this.current = performance.now();
 
-    const timeDiffPercentage: number = this.current / this.duration;
+    const timeDiffPercentage: number = (this.current - this.started) / this.duration;
 
     const percentageThroughAnimation: number = this._easing(timeDiffPercentage);
 
     const fadeAmount: number = 1 * percentageThroughAnimation;
 
-    this._filter.alpha = fadeAmount;
+    this._filter.alpha = this._fadeOut ? fadeAmount : this._initialOpacity - fadeAmount;
 
     if (this.useRAF) this.id = requestAnimationFrame(() => this.update());
   }
@@ -87,22 +122,8 @@ export default class PanTo extends Effect {
    * @returns {boolean} Returns true if the fade effect is done or not.
    */
   criteriaMet(): boolean {
-    if (this._filter.alpha >= 0.99) return true;
+    if ((this._fadeOut && this._filter.alpha >= this._opacity - 0.01) || (!this._fadeOut && this._filter.alpha <= this._opacity + 0.01)) return true;
 
     return false;
-  }
-
-  /**
-   * Sets up the sprite that's used for the background.
-   * 
-   * @private
-   */
-  private _setupBackground() {
-    this._filter.width = this.container.width;
-    this._filter.height = this.container.height;
-    this._filter.tint = this._color;
-    this._filter.alpha = 0;
-
-    this.container.addChild(this._filter);
   }
 }

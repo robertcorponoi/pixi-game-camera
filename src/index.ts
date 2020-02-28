@@ -7,9 +7,9 @@ import Camera from './camera/Camera';
 import Options from './options/Options';
 
 /**
- * A camera with effects for your PIXI application that makes no assumption of how you use PIXI.
+ * A non-opinioned implementation for adding cameras to your PIXI application via containers.
  */
-export default class PIXICamera {
+export default class PixiGameCamera {
   /**
    * A reference to the options passed on initialization.
    * 

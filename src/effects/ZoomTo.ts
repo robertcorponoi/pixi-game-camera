@@ -89,7 +89,7 @@ export default class ZoomTo extends Effect {
 
     this.current = performance.now();
 
-    const timeDiffPercentage: number = this.current / this.duration;
+    const timeDiffPercentage: number = (this.current - this.started) / this.duration;
 
     const percentageThroughAnimation: number = this._easing(timeDiffPercentage);
 

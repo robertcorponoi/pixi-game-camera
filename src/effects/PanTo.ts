@@ -81,7 +81,7 @@ export default class PanTo extends Effect {
 
     this.current = performance.now();
     
-    const timeDiffPercentage: number = this.current / this.duration;
+    const timeDiffPercentage: number = (this.current - this.started) / this.duration;
     const timeDiffPercentageNegative: number = (this.duration - this.current) / this.duration;
 
     const xPanAmount: number = this._xIsGreater ? this._difference.x * timeDiffPercentage : this._difference.x * timeDiffPercentageNegative;
@@ -99,7 +99,7 @@ export default class PanTo extends Effect {
    * @returns {boolean} Returns true if the panto effect is finished or false otherwise.
    */
   criteriaMet(): boolean {
-    if (this.container.pivot.x > this._coordinates.x - 5 && this.container.pivot.x < this._coordinates.x + 5  && this.container.pivot.y > this._coordinates.y - 5 && this.container.pivot.y < this._coordinates.x + 5) return true;
+    if (this.container.pivot.x > this._coordinates.x - 5 && this.container.pivot.x < this._coordinates.x + 5  && this.container.pivot.y > this._coordinates.y - 5 && this.container.pivot.y < this._coordinates.y + 5) return true;
 
     return false;
   }
