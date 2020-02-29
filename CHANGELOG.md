@@ -1,3 +1,6 @@
+## 0.1.0 / 2020-02-28
+- Initial release.
+
 ## 0.0.6 / 2020-02-27
 - [FEATURE] Finished fadeTo effect.
 - [TESTS] Added testing for effects.

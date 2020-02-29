@@ -1,7 +1,7 @@
 {
   "name": "pixi-game-camera",
-  "version": "0.0.6",
-  "description": "",
+  "version": "0.1.0",
+  "description": "A non-opinioned implementation for adding cameras to your PIXI application via containers.",
   "main": "index.js",
   "scripts": {
     "tsconfig": "tsc --init --declaration --allowSyntheticDefaultImports --target esnext --outDir lib",

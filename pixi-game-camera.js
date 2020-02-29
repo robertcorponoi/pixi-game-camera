@@ -781,9 +781,7 @@ function () {
  * A generic object that contains the properties and methods of all effects.
  */
 
-var Effect =
-/*#__PURE__*/
-function () {
+var Effect = /*#__PURE__*/function () {
   /**
    * The container that the effect is happening on.
    * 
@@ -890,9 +888,7 @@ function () {
  * A panning effect that makes the camera focus on a point in the container.
  */
 
-var PanTo =
-/*#__PURE__*/
-function (_Effect) {
+var PanTo = /*#__PURE__*/function (_Effect) {
   _inherits(PanTo, _Effect);
 
   /**
@@ -1028,9 +1024,7 @@ function (_Effect) {
 /**
  * A Shake effect involves shaking the camera at various amounts up to a sepcified intensity.
  */
-var Shake =
-/*#__PURE__*/
-function (_Effect) {
+var Shake = /*#__PURE__*/function (_Effect) {
   _inherits(Shake, _Effect);
 
   /**
@@ -1125,9 +1119,7 @@ function (_Effect) {
 /**
  * A panning effect that makes the camera focus on a point in the container.
  */
-var PanTo$1 =
-/*#__PURE__*/
-function (_Effect) {
+var PanTo$1 = /*#__PURE__*/function (_Effect) {
   _inherits(PanTo, _Effect);
 
   /**
@@ -1246,9 +1238,7 @@ function (_Effect) {
 /**
  * A zooming effect that involves the camera zooming in to a particular point on the container.
  */
-var ZoomTo =
-/*#__PURE__*/
-function (_Effect) {
+var ZoomTo = /*#__PURE__*/function (_Effect) {
   _inherits(ZoomTo, _Effect);
 
   /**
@@ -1381,9 +1371,7 @@ function (_Effect) {
 /**
  * Camera that can be applied to a game/animation made with pixijs.
  */
-var Camera =
-/*#__PURE__*/
-function () {
+var Camera = /*#__PURE__*/function () {
   /**
    * The container this camera is focusing on.
    *
@@ -1617,9 +1605,7 @@ function Options(options) {
  * A non-opinioned implementation for adding cameras to your PIXI application via containers.
  */
 
-var PixiGameCamera =
-/*#__PURE__*/
-function () {
+var PixiGameCamera = /*#__PURE__*/function () {
   /**
    * A reference to the options passed on initialization.
    * 

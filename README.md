@@ -20,6 +20,8 @@
 
 PIXI camera allows you to apply effects to your camera without requiring you to use PIXI a certain way. PIXI is not bundled with this package at all and so optional effects that require PIXI components can be passed if desired but they are not required.
 
+**Upcoming Features:** flash, scroll, rotate, and more.
+
 ## **Installation**
 
 To install pixi-game-camera, use:
@@ -223,3 +225,7 @@ camera.fadeTo(0x000000, 1, 5000);
 // Fade to mostly blue over 3 seconds with a cubic easing.
 camera.fadeTo(0x337ab7, 0.7, 3000, pc.EASING.easeCubicIn);
 ```
+
+## **License**
+
+MIT
