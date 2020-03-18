@@ -1,6 +1,6 @@
 {
   "name": "pixi-game-camera",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A non-opinioned implementation for adding cameras to your PIXI application via containers.",
   "main": "index.js",
   "scripts": {
@@ -36,19 +36,19 @@
   "typings": "lib/index.d.ts",
   "devDependencies": {
     "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.8.6",
+    "@babel/core": "^7.8.7",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-proposal-numeric-separator": "^7.8.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
-    "@babel/preset-env": "^7.8.6",
+    "@babel/preset-env": "^7.8.7",
     "@babel/preset-typescript": "^7.8.3",
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
     "@types/d3-ease": "^1.0.9",
     "pixi.js": "^5.2.1",
-    "rollup": "^1.31.1",
-    "rollup-plugin-babel": "^4.3.3",
-    "typescript": "^3.7.5"
+    "rollup": "^2.1.0",
+    "rollup-plugin-babel": "^4.4.0",
+    "typescript": "^3.8.3"
   },
   "dependencies": {
     "d3-ease": "^1.0.6",
