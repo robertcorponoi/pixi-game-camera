@@ -73,3 +73,6 @@ camera = pgc.camera(app.stage);
 
 // Verified
 // camera.fadeTo(0x000000, 1, 2000);
+
+// Verified
+// camera.rotate(45, 3000);

@@ -1,6 +1,6 @@
 {
   "name": "pixi-game-camera",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A non-opinioned implementation for adding cameras to your PIXI application via containers.",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,8 @@
     "shake",
     "fade",
     "zoom",
-    "pan"
+    "pan",
+    "rotate"
   ],
   "author": "Robert Corponoi",
   "license": "MIT",

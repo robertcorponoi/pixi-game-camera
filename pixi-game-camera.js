@@ -1369,6 +1369,124 @@ var ZoomTo = /*#__PURE__*/function (_Effect) {
 }(Effect);
 
 /**
+ * A rotating effect that involves rotating the game a specified number of degrees.
+ */
+var Rotate = /*#__PURE__*/function (_Effect) {
+  _inherits(Rotate, _Effect);
+
+  /**
+   * A reference to the initial angle.
+   * 
+   * @private
+   * 
+   * @property {number}
+   */
+
+  /**
+   * The angle to rotate to, from 0 to 360 with 0 being the default state and 360 being all the way around back to the default state.
+   * 
+   * @private
+   * 
+   * @property {number}
+   */
+
+  /**
+   * The initial pivot of the container.
+   * 
+   * @private
+   * 
+   * @property {Vector}
+   */
+
+  /**
+   * A reference to the easing function to use for this effect.
+   * 
+   * @private
+   * 
+   * @property {Function}
+   */
+
+  /**
+   * @param {PIXI.Container} container A reference to the container to apply the rotate effect to.
+   * @param {number} angle The angle to rotate to, from 0 to 360 with 0 being the default state and 360 being all the way around back to the default state.
+   * @param {number} duration The amount of time, in milliseconds, that the effect should take.
+   * @param {Function} easing The easing function that should be used.
+   */
+  function Rotate(container, angle, duration, easing) {
+    var _this;
+
+    _classCallCheck(this, Rotate);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Rotate).call(this, container));
+
+    _defineProperty(_assertThisInitialized(_this), "_initialAngle", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_desiredAngle", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_initialPivot", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_easing", void 0);
+
+    _this._initialAngle = container.angle;
+    _this._desiredAngle = angle;
+    _this.duration = duration;
+    _this._easing = easing;
+    _this._initialPivot = {
+      x: _this.container.pivot.x,
+      y: _this.container.pivot.y
+    };
+    if (_this._initialPivot.x == 0) _this.container.pivot.x = _this.container.width / 2;
+    if (_this._initialPivot.y == 0) _this.container.pivot.y = _this.container.height / 2;
+    return _this;
+  }
+  /**
+   * Updates the status of this effect on a frame by frame basis.
+   */
+
+
+  _createClass(Rotate, [{
+    key: "update",
+    value: function update() {
+      var _this2 = this;
+
+      if (this.criteriaMet()) {
+        this.finished.dispatch();
+        return;
+      }
+
+      this.current = performance.now();
+      var timeDiffPercentage = (this.current - this.started) / this.duration;
+
+      var percentageThroughAnimation = this._easing(timeDiffPercentage);
+
+      var angleAmount = this._desiredAngle * percentageThroughAnimation;
+      this.container.angle = this._initialAngle + angleAmount;
+      if (this.useRAF) this.id = requestAnimationFrame(function () {
+        return _this2.update();
+      });
+    }
+    /**
+     * Checks to see if the container's current angle is very close to the desired angle.
+     * 
+     * We can't use container angle == desired angle because with the game loop we might miss that exact moment so we check a very small window.
+     * 
+     * @private
+     * 
+     * @returns {boolean} Returns true if the angle criteria is met or false otherwise.
+     */
+
+  }, {
+    key: "criteriaMet",
+    value: function criteriaMet() {
+      if (this.container.angle > this._desiredAngle) return true;
+      return false;
+    }
+  }]);
+
+  return Rotate;
+}(Effect);
+
+/**
  * Camera that can be applied to a game/animation made with pixijs.
  */
 var Camera = /*#__PURE__*/function () {
@@ -1492,6 +1610,22 @@ var Camera = /*#__PURE__*/function () {
       var fade = new PanTo(this._container, this._filter, color, duration, opacity, easing);
 
       this._addToTicker(fade);
+    }
+    /**
+     * Rotates to a specified angle.
+     * 
+     * @param {number} angle The angle to rotate to, from 0 to 360 with 0 being the default state and 360 being all the way around back to the default state.
+     * @param {number} duration The amount of time, in milliseconds, that the effect should take.
+     * @param {Function} [easing=easeLinear] The easing function that should be used.
+     */
+
+  }, {
+    key: "rotate",
+    value: function rotate(angle, duration) {
+      var easing = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : linear;
+      var rotate = new Rotate(this._container, angle, duration, easing);
+
+      this._addToTicker(rotate);
     }
     /**
      * Adds an effect to the PIXI Ticker if it's being used and removes it when necessary.

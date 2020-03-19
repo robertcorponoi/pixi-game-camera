@@ -75,6 +75,14 @@ export default class Camera {
      */
     fadeTo(color: number, opacity: number | undefined, duration: number, easing?: Function): void;
     /**
+     * Rotates to a specified angle.
+     *
+     * @param {number} angle The angle to rotate to, from 0 to 360 with 0 being the default state and 360 being all the way around back to the default state.
+     * @param {number} duration The amount of time, in milliseconds, that the effect should take.
+     * @param {Function} [easing=easeLinear] The easing function that should be used.
+     */
+    rotate(angle: number, duration: number, easing?: Function): void;
+    /**
      * Adds an effect to the PIXI Ticker if it's being used and removes it when necessary.
      *
      * @private

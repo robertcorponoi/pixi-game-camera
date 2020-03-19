@@ -1,6 +1,6 @@
-<!-- <p align="center">
-  <img width="250" height="250" src="https://github.com/robertcorponoi/graphics/blob/master/pixi-game-camera/pixi-game-camera-logo.png?raw=true">
-</p> -->
+<p align="center">
+  <img width="250" height="250" src="https://raw.githubusercontent.com/robertcorponoi/graphics/master/pixi-game-camera/logo/pixi-game-camera-logo.png">
+</p>
 
 <h1 align="center">Pixi Game Camera</h1>
 
@@ -20,7 +20,7 @@
 
 PIXI camera allows you to apply effects to your camera without requiring you to use PIXI a certain way. PIXI is not bundled with this package at all and so optional effects that require PIXI components can be passed if desired but they are not required.
 
-**Upcoming Features:** flash, scroll, rotate, and more.
+**Upcoming Features:** flash, scroll, and more.
 
 ## **Installation**
 
@@ -224,6 +224,28 @@ camera.fadeTo(0x000000, 1, 5000);
 
 // Fade to mostly blue over 3 seconds with a cubic easing.
 camera.fadeTo(0x337ab7, 0.7, 3000, pc.EASING.easeCubicIn);
+```
+
+### **rotate**
+
+Rotates to a specified angle.
+
+This effect requires the sprite and texture options to be set.
+
+| param    | type     | description                                                                                                                      | default    |
+|----------|----------|----------------------------------------------------------------------------------------------------------------------------------|------------|
+| angle    | number   | The angle to rotate to, from 0 to 360 with 0 being the default state and 360 being all the way around back to the default state. |            |
+| duration | number   | The amount of time it should take for the rotation to complete.                                                                  |            |
+| easing   | Function | The easing function to apply to the rotation.                                                                                    | easeLinear |
+
+**example:**
+
+```js
+// Rotate to 45 degrees in 3 seconds.
+camera.rotate(45, 3000);
+
+// Rotate to 365 degrees in 5 seconds with a cubic easing.
+camera.rotate(365, 5000, pc.EASING.easeCubicIn);
 ```
 
 ## **License**

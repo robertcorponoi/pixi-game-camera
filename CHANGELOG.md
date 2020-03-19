@@ -1,3 +1,9 @@
+## 0.2.0 / 2020-03-18
+- [FEATURE] Added rotate effect.
+- [DOCS] Updated docs to show usage of rotate effect.
+- [TEST] Added test for rotate effect.
+- [MISC] Added logo to README.
+
 ## 0.1.1 / 2020-03-18
 - [MISC] Fixed security vulnerabilities that could be fixed. The rest require updates to @babel/cli.
 - [MISC] Updated out-of-date dependencies to their latest versions.
