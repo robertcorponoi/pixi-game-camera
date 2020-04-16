@@ -1,3 +1,6 @@
+## 0.2.1 / 2020-04-16
+- [MISC] Updated out-of-date dependencies to their latest versions which also fixed some fixed security vulnerabilities.
+
 ## 0.2.0 / 2020-03-18
 - [FEATURE] Added rotate effect.
 - [DOCS] Updated docs to show usage of rotate effect.
