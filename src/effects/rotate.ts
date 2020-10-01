@@ -1,14 +1,14 @@
 'use strict'
 
-import * as PIXI from 'pixi.js';
+import { Container } from '@pixi/display';
 
-import Effect from './Effect';
-import Vector from '../Vector';
+import { Effect } from './effect';
+import { Vector } from '../vector';
 
 /**
  * A rotating effect that involves rotating the game a specified number of degrees.
  */
-export default class Rotate extends Effect {
+export class Rotate extends Effect {
   /**
    * A reference to the initial angle.
    * 
@@ -46,18 +46,18 @@ export default class Rotate extends Effect {
   private _easing: Function;
 
   /**
-   * @param {PIXI.Container} container A reference to the container to apply the rotate effect to.
+   * @param {Container} container A reference to the container to apply the rotate effect to.
    * @param {number} angle The angle to rotate to, from 0 to 360 with 0 being the default state and 360 being all the way around back to the default state.
    * @param {number} duration The amount of time, in milliseconds, that the effect should take.
    * @param {Function} easing The easing function that should be used.
    */
-  constructor(container: PIXI.Container, angle: number, duration: number, easing: Function) {
+  constructor(container: Container, angle: number, duration: number, easing: Function) {
     super(container);
 
     this._initialAngle = container.angle;
     this._desiredAngle = angle
     this.duration = duration;
-    this._easing = easing;
+    this._easing = easing || this.easeLinear;
     this._initialPivot = { x: this.container.pivot.x, y: this.container.pivot.y };
 
     if (this._initialPivot.x == 0) this.container.pivot.x = this.container.width / 2;

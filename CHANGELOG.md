@@ -1,3 +1,10 @@
+## 1.0.0 / 2020-10-01
+- [FEATURE] Exported all parts of the package individually so you can use just what you need.
+- [FEATURE] Detached containier from app so that any container can be used for any effect.
+- [MISC] Removed easing functions to offer greater flexability and smaller file sizes. A linear ease is used by default and any easing function can be passed in to effects that can be eased.
+- [MISC] Change file names from PascalCase to snake_case.
+- [MISC] Removed all default exports and made them all named.
+
 ## 0.2.2 / 2020-09-30
 - [TEST] Changed test server to use fastify for ease of use.
 - [MISC] Flatted directory structure in src directory.

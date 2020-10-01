@@ -1,9 +1,9 @@
-import * as PIXI from 'pixi.js';
-import Effect from './Effect';
+import { Container } from '@pixi/display';
+import { Effect } from './effect';
 /**
  * A Shake effect involves shaking the camera at various amounts up to a sepcified intensity.
  */
-export default class Shake extends Effect {
+export declare class Shake extends Effect {
     /**
      * The intensity of the shake, from 1-10.
      *
@@ -23,11 +23,11 @@ export default class Shake extends Effect {
      */
     private _initialPivot;
     /**
-     * @param {PIXI.Container} container A reference to the container to apply the shake effect to.
+     * @param {Container} container A reference to the container to apply the shake effect to.
      * @param {number} intensity The intensity of the shake, from a scale of 1 to 10.
      * @param {number} duration The duration of the shake effect.
      */
-    constructor(container: PIXI.Container, intensity: number, duration: number);
+    constructor(container: Container, intensity: number, duration: number);
     /**
      * Updates the status of the shake.
      */

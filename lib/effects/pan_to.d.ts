@@ -1,9 +1,9 @@
-import * as PIXI from 'pixi.js';
-import Effect from './Effect';
+import { Container } from '@pixi/display';
+import { Effect } from './effect';
 /**
  * A panning effect that makes the camera focus on a point in the container.
  */
-export default class PanTo extends Effect {
+export declare class PanTo extends Effect {
     /**
      * The (x, y) coordinate pair to pan to.
      *
@@ -41,12 +41,12 @@ export default class PanTo extends Effect {
      */
     private _yIsGreater;
     /**
-     * @param {PIXI.Container} container A reference to the container to apply the panto effect to.
+     * @param {Container} container A reference to the container to apply the panto effect to.
      * @param {number} x The x coordinate to pan to.
      * @param {number} y The y coordinate to pan to.
      * @param {number} duration The amount of time, in milliseconds, that the effect should take.
      */
-    constructor(container: PIXI.Container, x: number, y: number, duration: number);
+    constructor(container: Container, x: number, y: number, duration: number);
     /**
      * Updates the status of this effect on a frame by frame basis.
      */
