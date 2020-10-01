@@ -3,14 +3,14 @@
 import * as PIXI from 'pixi.js';
 import { easeLinear } from 'd3-ease';
 
-import Options from '../options/Options';
+import Options from './Options';
 
-import Fade from '../effects/Fade';
-import Shake from '../effects/Shake';
-import PanTo from '../effects/PanTo';
-import ZoomTo from '../effects/ZoomTo';
-import Rotate from '../effects/Rotate';
-import Effect from '../effects/Effect';
+import Fade from './effects/Fade';
+import Shake from './effects/Shake';
+import PanTo from './effects/PanTo';
+import ZoomTo from './effects/ZoomTo';
+import Rotate from './effects/Rotate';
+import Effect from './effects/Effect';
 
 /**
  * Camera that can be applied to a game/animation made with pixijs.
@@ -58,11 +58,9 @@ export default class Camera {
    */
   constructor(container: PIXI.Container, options: Options) {
     this._container = container;
-
     this._options = options;
 
     if (this._options.ticker) this._ticker = this._options.ticker;
-
     if (this._options.sprite && this._options.texture) this._setupFilter();
   }
 
@@ -73,8 +71,7 @@ export default class Camera {
    * @param {number} [duration=Infinity] The duration of the shake effect.
    */
   shake(intensity: number = 5, duration: number = Infinity) {
-    const shake: Shake = new Shake(this._container, intensity, duration);
-
+    const shake = new Shake(this._container, intensity, duration);
     this._addToTicker(shake);
   }
 
@@ -87,8 +84,7 @@ export default class Camera {
    * @param {Function} [easing=easeLinear] The easing function that should be used.
    */
   zoomTo(xZoomLevel: number, yZoomLevel: number, duration: number, easing: Function = easeLinear) {
-    const zoomTo: ZoomTo = new ZoomTo(this._container, xZoomLevel, yZoomLevel, duration, easing);
-
+    const zoomTo = new ZoomTo(this._container, xZoomLevel, yZoomLevel, duration, easing);
     this._addToTicker(zoomTo);
   }
 
@@ -100,8 +96,7 @@ export default class Camera {
    * @param {number} duration The amount of time, in milliseconds, that the effect should take.
    */
   panTo(x: number, y: number, duration: number) {
-    const panTo: PanTo = new PanTo(this._container, x, y, duration);
-
+    const panTo = new PanTo(this._container, x, y, duration);
     this._addToTicker(panTo);
   }
 
@@ -116,8 +111,7 @@ export default class Camera {
   fadeTo(color: number, opacity: number = 1, duration: number, easing: Function = easeLinear) {
     if (!this._optionalPackagesExist()) return;
 
-    const fade: Fade = new Fade(this._container, this._filter, color, duration, opacity, easing);
-
+    const fade = new Fade(this._container, this._filter, color, duration, opacity, easing);
     this._addToTicker(fade);
   }
 
@@ -129,8 +123,7 @@ export default class Camera {
    * @param {Function} [easing=easeLinear] The easing function that should be used.
    */
   rotate(angle: number, duration: number, easing: Function = easeLinear) {
-    const rotate: Rotate = new Rotate(this._container, angle, duration, easing);
-
+    const rotate = new Rotate(this._container, angle, duration, easing);
     this._addToTicker(rotate);
   }
 
@@ -142,11 +135,10 @@ export default class Camera {
    * @param {Effect} effect The effect to add to the Ticker.
    */
   private _addToTicker(effect: Effect) {
-    const effectBound: any = effect.update.bind(effect);
+    const effectBound = effect.update.bind(effect);
 
     if (this._ticker) {
       effect.finished.add(() => this._ticker?.remove(effectBound));
-
       this._ticker?.add(effectBound);
     } else effect.start();
   }
@@ -161,7 +153,6 @@ export default class Camera {
   private _optionalPackagesExist(): boolean {
     if (!this._filter) {
       console.warn('Skipping effect, PIXI.Sprite and PIXI.Texture object must be provided to use this effect.');
-
       return false;
     }
 

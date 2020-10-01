@@ -23,7 +23,7 @@ export default abstract class Effect {
    * 
    * @default 0
    */
-  duration: number = 0;
+  duration = 0;
 
   /**
    * A timestamp of when this effect was started.
@@ -32,7 +32,7 @@ export default abstract class Effect {
    * 
    * @default 0;
    */
-  started: DOMHighResTimeStamp = 0;
+  started = 0;
 
   /**
    * A timestamp of when this effect was last run.
@@ -41,14 +41,14 @@ export default abstract class Effect {
    * 
    * @default 0
    */
-  current: DOMHighResTimeStamp = 0;
+  current = 0;
 
   /**
    * A reference to the singal that is dispatched when this effect is finished.
    * 
    * @property {Hypergiant}
    */
-  finished: Hypergiant = new Hypergiant();
+  finished = new Hypergiant();
 
   /**
    * Indicates whether requestAnimationFrame is being used or not.
@@ -57,7 +57,7 @@ export default abstract class Effect {
    * 
    * @default false
    */
-  useRAF: boolean = false;
+  useRAF = false;
 
   /**
    * A reference to the requestAnimationFrame id if RAF is being used.
@@ -71,7 +71,6 @@ export default abstract class Effect {
    */
   constructor(container: PIXI.Container) {
     this.container = container;
-
     this.started = performance.now();
   }
 
@@ -80,7 +79,6 @@ export default abstract class Effect {
    */
   start() {
     this.useRAF = true;
-
     this.finished.add(() => cancelAnimationFrame(this.id!));
 
     this.update();

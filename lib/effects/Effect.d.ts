@@ -27,7 +27,7 @@ export default abstract class Effect {
      *
      * @default 0;
      */
-    started: DOMHighResTimeStamp;
+    started: number;
     /**
      * A timestamp of when this effect was last run.
      *
@@ -35,7 +35,7 @@ export default abstract class Effect {
      *
      * @default 0
      */
-    current: DOMHighResTimeStamp;
+    current: number;
     /**
      * A reference to the singal that is dispatched when this effect is finished.
      *

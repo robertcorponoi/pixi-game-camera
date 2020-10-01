@@ -23,5 +23,8 @@ export default {
   output: [{
     file: pkg.module,
     format: 'esm',
+  }, {
+    file: `test/${pkg.module}`,
+    format: 'esm'
   }],
 };

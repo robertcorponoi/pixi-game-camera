@@ -53,7 +53,7 @@ export default class PanTo extends Effect {
    * 
    * @default true
    */
-  private _fadeOut: boolean = true;
+  private _fadeOut = true;
 
   /**
    * The initial opacity of the filter as of the start of this effect.
@@ -75,17 +75,11 @@ export default class PanTo extends Effect {
     super(container);
 
     this._filter = filter;
-
     this._color = color;
-
     this.duration = duration;
-
     this._opacity = opacity;
-
     this._easing = easing;
-
     this._filter.tint = this._color;
-
     this._initialOpacity = this._filter.alpha;
 
     if (this._filter.alpha > this._opacity) this._fadeOut = false;
@@ -97,7 +91,6 @@ export default class PanTo extends Effect {
   update() {
     if (this.criteriaMet()) {
       this._filter.alpha = this._opacity;
-
       this.finished.dispatch();
 
       return;
@@ -105,12 +98,10 @@ export default class PanTo extends Effect {
 
     this.current = performance.now();
 
-    const timeDiffPercentage: number = (this.current - this.started) / this.duration;
+    const timeDiffPercentage = (this.current - this.started) / this.duration;
+    const percentageThroughAnimation = this._easing(timeDiffPercentage);
 
-    const percentageThroughAnimation: number = this._easing(timeDiffPercentage);
-
-    const fadeAmount: number = 1 * percentageThroughAnimation;
-
+    const fadeAmount = 1 * percentageThroughAnimation;
     this._filter.alpha = this._fadeOut ? fadeAmount : this._initialOpacity - fadeAmount;
 
     if (this.useRAF) this.id = requestAnimationFrame(() => this.update());
@@ -123,7 +114,6 @@ export default class PanTo extends Effect {
    */
   criteriaMet(): boolean {
     if ((this._fadeOut && this._filter.alpha >= this._opacity - 0.01) || (!this._fadeOut && this._filter.alpha <= this._opacity + 0.01)) return true;
-
     return false;
   }
 }

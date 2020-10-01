@@ -3,7 +3,7 @@
 import * as PIXI from 'pixi.js';
 
 import Effect from './Effect';
-import Vector from '../interface/Vector';
+import Vector from '../Vector';
 
 /**
  * A panning effect that makes the camera focus on a point in the container.
@@ -36,7 +36,7 @@ export default class PanTo extends Effect {
    * 
    * @default false
    */
-  private _xIsGreater: boolean = false;
+  private _xIsGreater = false;
 
   /**
    * Indicates whether the desired y is greater than the current y or not.
@@ -47,7 +47,7 @@ export default class PanTo extends Effect {
    * 
    * @default false
    */
-  private _yIsGreater: boolean = false;
+  private _yIsGreater = false;
 
   /**
    * @param {PIXI.Container} container A reference to the container to apply the panto effect to.
@@ -59,11 +59,9 @@ export default class PanTo extends Effect {
     super(container);
 
     this._coordinates = { x, y };
-
     this.duration = duration;
 
     if (this._coordinates.x > this.container.pivot.x) this._xIsGreater = true;
-
     if (this._coordinates.y > this.container.pivot.y) this._yIsGreater = true;
 
     this._difference = { x: Math.abs(this._coordinates.x - this.container.pivot.x), y: Math.abs(this._coordinates.y - this.container.pivot.y) };
@@ -75,17 +73,16 @@ export default class PanTo extends Effect {
   update() {
     if (this.criteriaMet()) {
       this.finished.dispatch();
-
       return;
     }
 
     this.current = performance.now();
     
-    const timeDiffPercentage: number = (this.current - this.started) / this.duration;
-    const timeDiffPercentageNegative: number = (this.duration - this.current) / this.duration;
+    const timeDiffPercentage = (this.current - this.started) / this.duration;
+    const timeDiffPercentageNegative = (this.duration - this.current) / this.duration;
 
-    const xPanAmount: number = this._xIsGreater ? this._difference.x * timeDiffPercentage : this._difference.x * timeDiffPercentageNegative;
-    const yPanAmount: number = this._yIsGreater ? this._difference.y * timeDiffPercentage : this._difference.y * timeDiffPercentageNegative;
+    const xPanAmount = this._xIsGreater ? this._difference.x * timeDiffPercentage : this._difference.x * timeDiffPercentageNegative;
+    const yPanAmount = this._yIsGreater ? this._difference.y * timeDiffPercentage : this._difference.y * timeDiffPercentageNegative;
 
     this.container.pivot.x = xPanAmount;
     this.container.pivot.y = yPanAmount;
@@ -100,7 +97,6 @@ export default class PanTo extends Effect {
    */
   criteriaMet(): boolean {
     if (this.container.pivot.x > this._coordinates.x - 5 && this.container.pivot.x < this._coordinates.x + 5  && this.container.pivot.y > this._coordinates.y - 5 && this.container.pivot.y < this._coordinates.y + 5) return true;
-
     return false;
   }
 }

@@ -3,7 +3,7 @@
 import * as PIXI from 'pixi.js';
 
 import Effect from './Effect';
-import Vector from '../interface/Vector';
+import Vector from '../Vector';
 
 /**
  * A zooming effect that involves the camera zooming in to a particular point on the container.
@@ -43,7 +43,7 @@ export default class ZoomTo extends Effect {
    * 
    * @property {boolean}
    */
-  private _xIsGreater: boolean = false;
+  private _xIsGreater = false;
 
   /**
    * Indicates whether the desired y zoom level is greater than the current zoom level or not.
@@ -52,7 +52,7 @@ export default class ZoomTo extends Effect {
    * 
    * @property {boolean}
    */
-  private _yIsGreater: boolean = false;
+  private _yIsGreater = false;
 
   /**
    * @param {PIXI.Container} container A reference to the container to apply the zoomto effect to.
@@ -65,15 +65,12 @@ export default class ZoomTo extends Effect {
     super(container);
 
     this._desiredZoomLevel = { x: xZoomLevel, y: yZoomLevel };
-
     this.duration = duration;
-
     this._easing = easing;
 
     this._initialZoomLevel = { x: this.container.scale.x, y: this.container.scale.y };
 
     if (this._desiredZoomLevel.x > this._initialZoomLevel.x) this._xIsGreater = true;
-
     if (this._desiredZoomLevel.y > this._initialZoomLevel.y) this._yIsGreater = true;
   }
 
@@ -83,14 +80,12 @@ export default class ZoomTo extends Effect {
   update() {
     if (this.criteriaMet() || this.current > this.duration) {
       this.finished.dispatch();
-
       return;
     }
 
     this.current = performance.now();
 
     const timeDiffPercentage: number = (this.current - this.started) / this.duration;
-
     const percentageThroughAnimation: number = this._easing(timeDiffPercentage);
 
     const xZoomAmount: number = this._desiredZoomLevel.x * percentageThroughAnimation;

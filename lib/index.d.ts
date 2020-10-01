@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import Camera from './camera/Camera';
+import Camera from './Camera';
 /**
  * A non-opinioned implementation for adding cameras to your PIXI application via containers.
  */

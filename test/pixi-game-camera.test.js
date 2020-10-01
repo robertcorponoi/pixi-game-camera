@@ -1,6 +1,6 @@
 'use strict'
 
-import PixiGameCamera from '../pixi-game-camera.js';
+import PixiGameCamera from './pixi-game-camera.js';
 
 let app;
 

@@ -3,7 +3,7 @@
 import * as PIXI from 'pixi.js';
 
 import Effect from './Effect';
-import Vector from '../interface/Vector';
+import Vector from '../Vector';
 
 /**
  * A Shake effect involves shaking the camera at various amounts up to a sepcified intensity.
@@ -18,7 +18,7 @@ export default class Shake extends Effect {
    * 
    * @default 5
    */
-  private _intensity: number = 5;
+  private _intensity = 5;
 
   /**
    * A reference to the initial pivot of the container.
@@ -38,9 +38,7 @@ export default class Shake extends Effect {
     super(container);
 
     this._intensity = intensity;
-
     this.duration = duration;
-
     this._initialPivot = { x: this.container.pivot.x, y: this.container.pivot.y };
 
     this.started = performance.now();
@@ -57,12 +55,11 @@ export default class Shake extends Effect {
       this.container.pivot.y = this._initialPivot.y;
 
       this.finished.dispatch();
-
       return;
     }
 
-    const dx: number = Math.random() * this._intensity;
-    const dy: number = Math.random() * this._intensity;
+    const dx = Math.random() * this._intensity;
+    const dy = Math.random() * this._intensity;
 
     this.container.pivot.x = dx;
     this.container.pivot.y = dy;
@@ -77,7 +74,6 @@ export default class Shake extends Effect {
    */
   criteriaMet(): boolean {
     if (this.current - this.started >= this.duration) return true;
-
     return false;
   }
 }

@@ -3,8 +3,8 @@
 import * as PIXI from 'pixi.js';
 import * as easing from 'd3-ease';
 
-import Camera from './camera/Camera';
-import Options from './options/Options';
+import Camera from './Camera';
+import Options from './Options';
 
 /**
  * A non-opinioned implementation for adding cameras to your PIXI application via containers.
@@ -53,8 +53,7 @@ export default class PixiGameCamera {
    * @returns {Camera}
    */
   camera(container: PIXI.Container): Camera {
-    const cam: Camera = new Camera(container, this._options);
-
+    const cam = new Camera(container, this._options);
     return cam;
   }
 }

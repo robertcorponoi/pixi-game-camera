@@ -3,7 +3,7 @@
 import * as PIXI from 'pixi.js';
 
 import Effect from './Effect';
-import Vector from '../interface/Vector';
+import Vector from '../Vector';
 
 /**
  * A rotating effect that involves rotating the game a specified number of degrees.
@@ -55,13 +55,9 @@ export default class Rotate extends Effect {
     super(container);
 
     this._initialAngle = container.angle;
-
     this._desiredAngle = angle
-
     this.duration = duration;
-
     this._easing = easing;
-
     this._initialPivot = { x: this.container.pivot.x, y: this.container.pivot.y };
 
     if (this._initialPivot.x == 0) this.container.pivot.x = this.container.width / 2;
@@ -74,18 +70,15 @@ export default class Rotate extends Effect {
   update() {
     if (this.criteriaMet()) {
       this.finished.dispatch();
-
       return;
     }
 
     this.current = performance.now();
 
-    const timeDiffPercentage: number = (this.current - this.started) / this.duration;
+    const timeDiffPercentage = (this.current - this.started) / this.duration;
+    const percentageThroughAnimation = this._easing(timeDiffPercentage);
 
-    const percentageThroughAnimation: number = this._easing(timeDiffPercentage);
-
-    const angleAmount: number = this._desiredAngle * percentageThroughAnimation;
-
+    const angleAmount = this._desiredAngle * percentageThroughAnimation;
     this.container.angle = this._initialAngle + angleAmount;
 
     if (this.useRAF) this.id = requestAnimationFrame(() => this.update());
@@ -102,7 +95,6 @@ export default class Rotate extends Effect {
    */
   criteriaMet(): boolean {
     if (this.container.angle > this._desiredAngle) return true;
-
     return false;
   }
 }

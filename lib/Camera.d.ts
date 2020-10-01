@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import Options from '../options/Options';
+import Options from './Options';
 /**
  * Camera that can be applied to a game/animation made with pixijs.
  */

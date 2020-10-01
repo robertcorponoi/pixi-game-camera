@@ -1,3 +1,10 @@
+## 0.2.2 / 2020-09-30
+- [TEST] Changed test server to use fastify for ease of use.
+- [MISC] Flatted directory structure in src directory.
+- [MISC] Removed unnecessary typings.
+- [MISC] Updated out-of-date dependencies to their latest versions and fixed all security vulnerabilities.
+- [MISC] Added extra build scripts.
+
 ## 0.2.1 / 2020-04-16
 - [MISC] Updated out-of-date dependencies to their latest versions which also fixed some fixed security vulnerabilities.
 
