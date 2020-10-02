@@ -351,6 +351,8 @@ camera.effect(customShake);
 
 That's it! The Effect class will handle the logic of the game loop and what not. If you would like a more complex example that involves easing just check out the `Rotate` or `ZoomTo` effect which will look largely similar to this example but a bit more complicated. All of the effects have a similar structure which makes it easy to understand effects and create new ones.
 
+If you create any cool effects make sure to create a pull request and I'll gladly add them.
+
 ## **Tests**
 
 The tests for `pixi-game-camera` are browser based so to run them you need to first run:
