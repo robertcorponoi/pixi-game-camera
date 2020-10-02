@@ -2,6 +2,7 @@
 
 import { Camera } from './pixi_game_camera';
 
+import { Effect } from './effects/effect';
 import { Fade } from './effects/fade';
 import { Shake } from './effects/shake';
 import { PanTo } from './effects/pan_to';
@@ -10,6 +11,7 @@ import { ZoomTo } from './effects/zoom_to';
 
 export {
     // Effects
+    Effect,
     Fade,
     Shake,
     PanTo,

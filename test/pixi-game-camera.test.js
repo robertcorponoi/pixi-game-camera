@@ -1,6 +1,7 @@
 'use strict'
 
 import {
+  Effect,
   Fade,
   PanTo,
   Shake,
@@ -9,8 +10,46 @@ import {
   Camera,
 } from './pixi-game-camera.js';
 
+// Create a custom effect like the `Rotate` effect.
+class CustomRotate extends Effect {
+  constructor(container, angle, duration, easing) {
+    super(container);
+
+    this._initialAngle = container.angle;
+    this._desiredAngle = angle
+    this.duration = duration;
+    this._easing = easing || this.easeLinear;
+    this._initialPivot = { x: this.container.pivot.x, y: this.container.pivot.y };
+
+    if (this._initialPivot.x == 0) this.container.pivot.x = this.container.width / 2;
+    if (this._initialPivot.y == 0) this.container.pivot.y = this.container.height / 2;
+  }
+
+  update() {
+    if (this.criteriaMet()) {
+      this.finished.dispatch();
+      return;
+    }
+
+    this.current = performance.now();
+
+    const timeDiffPercentage = (this.current - this.started) / this.duration;
+    const percentageThroughAnimation = this._easing(timeDiffPercentage);
+
+    const angleAmount = this._desiredAngle * percentageThroughAnimation;
+    this.container.angle = this._initialAngle + angleAmount;
+
+    if (this.useRAF) this.id = requestAnimationFrame(() => this.update());
+  }
+
+  criteriaMet() {
+    if (this.container.angle > this._desiredAngle) return true;
+    return false;
+  }
+}
+
 // Create the PIXI App.
-for (let i = 0; i < 6; ++i) {
+for (let i = 0; i < 7; ++i) {
   const app = new PIXI.Application({ width: 500, height: 300 });
 
   // Create the containers that will represent the 4 layers of our test scene.
@@ -85,5 +124,9 @@ for (let i = 0; i < 6; ++i) {
       const rotate45Deg = new Rotate(app.stage, 45, 3000);
       camera.effect(rotate45Deg);
       break;
+    case 6:
+      // Custom rotate to have the Camera rotate the container 365 degrees.
+      const rotateCustom365Deg = new CustomRotate(app.stage, 365, 5000);
+      camera.effect(rotateCustom365Deg);
   }
 }

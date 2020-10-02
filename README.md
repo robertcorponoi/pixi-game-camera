@@ -20,6 +20,19 @@
 
 `pixi-game-camera` allows you to apply camera effects to any PIXI Container without requiring you to use PIXI in any certain way. PIXI is not bundled with this package resulting in a small file size but it also means that some effects need you to pass PIXI components to them.
 
+**Table of Contents**
+
+- [Installation](#installation)
+- [Importing](#importing)
+- [Effects](#effects)
+  - [Shake](#shake)
+  - [ZoomTo](#zoomto)
+  - [PanTo](#panto)
+  - [Fade](#fade)
+  - [Rotate](#rotate)
+- [Creating Your Own Effects](#creating-your-own-effects)
+- [Tests](#tests)
+
 ## **Installation**
 
 To install pixi-game-camera, use:
@@ -211,6 +224,132 @@ import { easeCubicIn } from 'd3-ease';
 const rotate365Deg = new Rotate(app.stage, 365, 5000, easeCubicIn);
 camera.effect(rotate365Deg);
 ```
+
+## **Creating Your Own Effects**
+
+Creating your own effects can be done by extending the `Effect` abstract class. Let's go through the step-by-step process of creating an effect that shakes the camera (essentially going over how the `Shake` method is created).
+
+1. First, you have to import the `Effect` module and extend your class with it like so:
+
+```ts
+import { Effect } from 'pixi-game-camera';
+
+export class MyCustomShake extends Effect {
+}
+```
+
+2. Let's see the values we need for this effect.
+
+We need the following private variables to keep track of the animation:
+
+- The intensity of the shake, from a scale of 1-10.
+- The initial pivot of the container so we can reset the pivot after the shake effect is complete.
+
+The reference to the container and other time keeping properties are handld by the `Effect` parent class.
+
+Now as far as user input, we need the following things:
+
+- The container to apply the shake effect to.
+- The intensity of the shake effect.
+- The length of time the shake effect should last for.
+
+So now let's see what our custom effect class looks like now:
+
+```ts
+/**
+ * A Shake effect involves shaking the camera at various amounts up to a sepcified intensity.
+ */
+export class MyCustomShake extends Effect {
+  /**
+   * The intensity of the shake, from 1-10.
+   * 
+   * @private
+   * 
+   * @property {number}
+   * 
+   * @default 5
+   */
+  private _intensity = 5;
+
+  /**
+   * A reference to the initial pivot of the container.
+   * 
+   * @private
+   * 
+   * @property {Vector}
+   */
+  private _initialPivot: Vector;
+
+  /**
+   * @param {Container} container A reference to the container to apply the shake effect to.
+   * @param {number} intensity The intensity of the shake, from a scale of 1 to 10.
+   * @param {number} duration The duration of the shake effect.
+   */
+  constructor(container: PIXI.Container, intensity: number, duration: number) {
+    super(container);
+
+    this._intensity = intensity;
+    this.duration = duration;
+    this._initialPivot = { x: this.container.pivot.x, y: this.container.pivot.y };
+
+    this.started = performance.now();
+  }
+}
+```
+
+What we do above is keep track of the intensity and duration like we discussed earlier and also set the `started` property that's on the Effect class to the current time.
+
+3. Next we need to override the `update` and `criteriaMet` abstract methods of the `Effect` class. 
+
+The `update` method is called every frame and it'll check to see if the effect is complete and if so it dispatches the `finished` signal which is used by the Effect class to cancel the game loop. If the effect is not finished then we need to specify what needs to be done this frame.
+
+The `criteraMet` method has to return a boolean which represents whether the effect  has finished or not.
+
+For our example, we'll use the `update` method to check if the effect is complete and if so we reset the container's pivot and dispatch the `finished` signal. Otherwise, we pick a random value to apply to the container's pivot to create a shaking effect and then if a `PIXI.Ticker` isn't being used we have to call `requestAnimationFrame` on `update` again to keep the shake effect going. The `criteriaMet` method simply checks to see if the current time - the time we started the effect at, which exists on the Effect class, is greater than or equal to the desired effect duration which would indicate that the effect is complete.
+
+```ts
+/**
+ * Updates the status of the shake.
+ */
+update() {
+  if (this.criteriaMet()) {
+    this.container.pivot.x = this._initialPivot.x;
+    this.container.pivot.y = this._initialPivot.y;
+
+    this.finished.dispatch();
+    return;
+  }
+
+  this.current = performance.now();
+
+  const dx = Math.random() * this._intensity;
+  const dy = Math.random() * this._intensity;
+
+  this.container.pivot.x = dx;
+  this.container.pivot.y = dy;
+
+  if (this.useRAF) this.id = requestAnimationFrame(() => this.update());
+}
+
+/**
+ * Checks to see if the shake effect is done.
+ * 
+ * @returns {boolean} Returns true if the shake effect is done or not.
+ */
+criteriaMet(): boolean {
+  if (this.current - this.started >= this.duration) return true;
+  return false;
+}
+```
+
+Lastly we just create an instance of our effect and add it to the camera:
+
+```ts
+const customShake = new MyCustomShake(app.stage, 5, 5000);
+camera.effect(customShake);
+```
+
+That's it! The Effect class will handle the logic of the game loop and what not. If you would like a more complex example that involves easing just check out the `Rotate` or `ZoomTo` effect which will look largely similar to this example but a bit more complicated. All of the effects have a similar structure which makes it easy to understand effects and create new ones.
 
 ## **Tests**
 

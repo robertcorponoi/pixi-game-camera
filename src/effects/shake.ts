@@ -48,8 +48,6 @@ export class Shake extends Effect {
    * Updates the status of the shake.
    */
   update() {
-    this.current = performance.now();
-
     if (this.criteriaMet()) {
       this.container.pivot.x = this._initialPivot.x;
       this.container.pivot.y = this._initialPivot.y;
@@ -57,6 +55,8 @@ export class Shake extends Effect {
       this.finished.dispatch();
       return;
     }
+
+    this.current = performance.now();
 
     const dx = Math.random() * this._intensity;
     const dy = Math.random() * this._intensity;
