@@ -1,21 +1,22 @@
 'use strict'
 
-import * as PIXI from 'pixi.js';
+import { Sprite } from '@pixi/sprite';
+import { Container } from '@pixi/display';
 
-import Effect from './Effect';
+import { Effect } from './effect';
 
 /**
  * A panning effect that makes the camera focus on a point in the container.
  */
-export default class PanTo extends Effect {
+export class Fade extends Effect {
   /**
    * A reference to the camera's filter.
    * 
    * @private
    * 
-   * @property {PIXI.Sprite}
+   * @property {Sprite}
    */
-  private _filter: PIXI.Sprite;
+  private _filter: Sprite;
 
   /**
    * The color to fade to.
@@ -65,20 +66,28 @@ export default class PanTo extends Effect {
   private _initialOpacity: number;
 
   /**
-   * @param {PIXI.Container} container A reference to the container to apply the fade effect to.
-   * @param {PIXI.Sprite} filter A reference to the camera filter used to apply this effect.
+   * @param {Container} container A reference to the container to apply the fade effect to.
+   * @param {Sprite} sprite A reference to the PIXI Sprite to use for the fade effect.
    * @param {number} color The hex of the color to fade to.
    * @param {number} duration The amount of time, in milliseconds, that the effect should take.
    * @param {Function} easing The easing function to use.
    */
-  constructor(container: PIXI.Container, filter: PIXI.Sprite, color: number, duration: number, opacity: number, easing: Function) {
+  constructor(container: Container, sprite: Sprite, color: number, opacity: number, duration: number, easing?: Function) {
     super(container);
 
-    this._filter = filter;
     this._color = color;
-    this.duration = duration;
     this._opacity = opacity;
-    this._easing = easing;
+    this.duration = duration;
+    this._easing = easing || this.easeLinear;
+
+    this._filter = sprite;
+
+    this._filter.width = this.container.width;
+    this._filter.height = this.container.height;
+    this._filter.alpha = 0;
+
+    this.container.addChild(this._filter);
+
     this._filter.tint = this._color;
     this._initialOpacity = this._filter.alpha;
 

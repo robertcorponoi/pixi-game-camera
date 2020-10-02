@@ -1,15 +1,15 @@
-import * as PIXI from 'pixi.js';
+import { Container } from '@pixi/display';
 import Hypergiant from 'hypergiant';
 /**
  * A generic object that contains the properties and methods of all effects.
  */
-export default abstract class Effect {
+export declare abstract class Effect {
     /**
      * The container that the effect is happening on.
      *
-     * @property {PIXI.Container}
+     * @property {Container}
      */
-    container: PIXI.Container;
+    container: Container;
     /**
      * The duration of thie effect.
      *
@@ -57,13 +57,19 @@ export default abstract class Effect {
      */
     id?: number;
     /**
-     * @param {PIXI.Container} container The container that the effect is happening on.
+     * @param {Container} container The container that the effect is happening on.
      */
-    constructor(container: PIXI.Container);
+    constructor(container: Container);
     /**
      * Starts the requestAnimationFrame loop to use this effect if a Ticker is not provided.
      */
     start(): void;
+    /**
+     * The default ease-linear easing function used if no easing function is provided.
+     *
+     * @param {number} t The percent we are currently through the animation.
+     */
+    easeLinear(t: number): number;
     /**
      * Updates the effect frame by frame.
      *

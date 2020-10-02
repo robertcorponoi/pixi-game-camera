@@ -1,9 +1,9 @@
-import * as PIXI from 'pixi.js';
-import Effect from './Effect';
+import { Container } from '@pixi/display';
+import { Effect } from './effect';
 /**
  * A zooming effect that involves the camera zooming in to a particular point on the container.
  */
-export default class ZoomTo extends Effect {
+export declare class ZoomTo extends Effect {
     /**
      * The zoom level to zoom to with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
      *
@@ -45,13 +45,13 @@ export default class ZoomTo extends Effect {
      */
     private _yIsGreater;
     /**
-     * @param {PIXI.Container} container A reference to the container to apply the zoomto effect to.
+     * @param {Container} container A reference to the container to apply the zoomto effect to.
      * @param {number} xZoomLevel The zoom level to zoom horizontally with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
      * @param {number} yZoomLevel The zoom level to zoom vertically with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
      * @param {number} duration The amount of time, in milliseconds, that the effect should take.
      * @param {Function} easing The easing function that should be used.
      */
-    constructor(container: PIXI.Container, xZoomLevel: number, yZoomLevel: number, duration: number, easing: Function);
+    constructor(container: Container, xZoomLevel: number, yZoomLevel: number, duration: number, easing: Function);
     /**
      * Updates the status of this effect on a frame by frame basis.
      */
