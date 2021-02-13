@@ -1,3 +1,6 @@
+## 1.0.1 / 2021-02-12
+- [MISC] Updated all dependencies to their latest versions.
+
 ## 1.0.0 / 2020-10-01
 - [FEATURE] Exported all parts of the package individually so you can use just what you need.
 - [FEATURE] Detached containier from app so that any container can be used for any effect.
