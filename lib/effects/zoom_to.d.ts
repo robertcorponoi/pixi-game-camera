@@ -49,9 +49,9 @@ export declare class ZoomTo extends Effect {
      * @param {number} xZoomLevel The zoom level to zoom horizontally with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
      * @param {number} yZoomLevel The zoom level to zoom vertically with values larger than 1 being zoomed in and values smaller than 1 being zoomed out.
      * @param {number} duration The amount of time, in milliseconds, that the effect should take.
-     * @param {Function} easing The easing function that should be used.
+     * @param {Function} [easing] The easing function that should be used.
      */
-    constructor(container: Container, xZoomLevel: number, yZoomLevel: number, duration: number, easing: Function);
+    constructor(container: Container, xZoomLevel: number, yZoomLevel: number, duration: number, easing?: Function);
     /**
      * Updates the status of this effect on a frame by frame basis.
      */

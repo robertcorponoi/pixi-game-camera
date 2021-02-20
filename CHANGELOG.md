@@ -1,3 +1,6 @@
+## 1.0.2 / 2021-02-20
+- [HOTFIX] Made the optional arguments for camera and the easing effects actually optional.
+
 ## 1.0.1 / 2021-02-12
 - [MISC] Updated all dependencies to their latest versions.
 

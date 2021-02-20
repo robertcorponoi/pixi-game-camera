@@ -1,4 +1,4 @@
-import { Camera } from './pixi_game_camera';
+import { Camera } from './camera';
 import { Effect } from './effects/effect';
 import { Fade } from './effects/fade';
 import { Shake } from './effects/shake';

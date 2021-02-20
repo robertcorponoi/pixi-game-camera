@@ -60,7 +60,7 @@ export declare class Fade extends Effect {
      * @param {Sprite} sprite A reference to the PIXI Sprite to use for the fade effect.
      * @param {number} color The hex of the color to fade to.
      * @param {number} duration The amount of time, in milliseconds, that the effect should take.
-     * @param {Function} easing The easing function to use.
+     * @param {Function} [easing] The easing function to use.
      */
     constructor(container: Container, sprite: Sprite, color: number, opacity: number, duration: number, easing?: Function);
     /**

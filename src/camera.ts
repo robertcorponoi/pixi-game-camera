@@ -27,9 +27,9 @@ export class Camera {
   private _ticker?: Ticker;
 
   /**
-   * @param {Ticker} options A reference to the PIXI Ticker, if it's being used.
+   * @param {Ticker} [options] A reference to the PIXI Ticker, if it's being used.
    */
-  constructor(options: Object) {
+  constructor(options?: Object) {
     this._options = new Options(options);
     if (this._options.ticker) this._ticker = this._options.ticker;
   }

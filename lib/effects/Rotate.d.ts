@@ -40,9 +40,9 @@ export declare class Rotate extends Effect {
      * @param {Container} container A reference to the container to apply the rotate effect to.
      * @param {number} angle The angle to rotate to, from 0 to 360 with 0 being the default state and 360 being all the way around back to the default state.
      * @param {number} duration The amount of time, in milliseconds, that the effect should take.
-     * @param {Function} easing The easing function that should be used.
+     * @param {Function} [easing] The easing function that should be used.
      */
-    constructor(container: Container, angle: number, duration: number, easing: Function);
+    constructor(container: Container, angle: number, duration: number, easing?: Function);
     /**
      * Updates the status of this effect on a frame by frame basis.
      */

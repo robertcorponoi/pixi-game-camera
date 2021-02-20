@@ -20,9 +20,9 @@ export declare class Camera {
      */
     private _ticker?;
     /**
-     * @param {Ticker} options A reference to the PIXI Ticker, if it's being used.
+     * @param {Ticker} [options] A reference to the PIXI Ticker, if it's being used.
      */
-    constructor(options: Object);
+    constructor(options?: Object);
     /**
      * Runs a provided effect.
      *

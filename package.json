@@ -1,6 +1,6 @@
 {
   "name": "pixi-game-camera",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A flexible and non-opinionated way to add camera effects to your PIXI application via containers.",
   "main": "index.js",
   "scripts": {

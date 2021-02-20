@@ -19,7 +19,7 @@ export class Options {
    * @param {Object} [options] The options passed to Camera on initialization.
    * @param {Ticker} [ticker] An instance of PIXI.Ticker to be used instead of the default `requestAnimationFrame`.
    */
-  constructor(options: Object) {
+  constructor(options: Object = {}) {
     Object.assign(this, options);
   }
 }
